@@ -51,6 +51,7 @@
             gap: 10px;
             z-index: 1001;
             margin-right: auto;
+            align-items: center;
         }
         .header-right {
             z-index: 1001;
@@ -79,6 +80,17 @@
         }
         #admin-nav-btn {
             background: #d9534f;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+        }
+        #staff-nav-btn {
+            background: #2e6da4;
             color: #fff;
             border: none;
             padding: 10px 20px;
@@ -140,7 +152,6 @@
         .product-card ul { padding-right: 20px; color: #a3b899; font-size: 14px; line-height: 1.8; margin-bottom: auto;}
         .price { font-size: 24px; color: var(--accent); font-weight: bold; margin: 20px 0; }
         
-        /* كلاس الدعم الفخم والممتد */
         .support-btn-container {
             width: 100%;
             max-width: 500px;
@@ -215,7 +226,7 @@
             border: 1px solid var(--primary);
             padding: 30px;
             border-radius: 10px;
-            width: 90%; max-width: 550px;
+            width: 90%; max-width: 600px;
             max-height: 85vh; overflow-y: auto;
             position: relative;
         }
@@ -243,6 +254,29 @@
         .panel-row h4 { margin: 0 0 10px 0; color: var(--primary); }
         .data-list { background: #050a06; padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 14px; }
         .data-item { display: flex; justify-content: space-between; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); align-items: center; color: #fff; }
+        
+        /* تنسيق قائمة التذاكر الخاصة بالعاملين */
+        .ticket-item {
+            background: #050a06;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .ticket-item:hover {
+            border-color: var(--primary);
+            background: #0d1a11;
+        }
+        .active-staff-chat {
+            border-top: 1px dashed var(--border-color);
+            padding-top: 15px;
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
@@ -251,6 +285,7 @@
         <div class="header-right"></div>
         <div class="logo">KW STORE</div>
         <div class="header-left">
+            <button id="staff-nav-btn" onclick="openModal('staffTicketsModal')">🎫 تذاكر العاملين</button>
             <button id="admin-nav-btn" onclick="openModal('adminModal')">⚙️ إعدادات الصفحة</button>
         </div>
     </header>
@@ -265,7 +300,6 @@
         <div class="section-title">أنظمة إدارة الأعمال الاحترافية</div>
         <div class="products-grid">
             
-            <!-- الكارت الأول المتكامل للخدمات الجديدة -->
             <div class="product-card">
                 <div>
                     <h3>صناعة برامج مخصصة للأعمال</h3>
@@ -281,7 +315,6 @@
                 </div>
             </div>
 
-            <!-- الكارت الثاني لتصميم الواجهات -->
             <div class="product-card">
                 <div>
                     <h3>تصميم مخصص وواجهات (UI/UX)</h3>
@@ -348,9 +381,22 @@
                 </div>
                 <div class="data-list" id="empList"></div>
             </div>
+        </div>
+    </div>
 
-            <div class="panel-row" style="border: none;">
-                <h4>💬 لوحة الرد الفوري على الشكاوى والعملاء</h4>
+    <!-- مودال مخصص بالكامل لتذاكر العاملين منسق ومنفصل -->
+    <div class="modal" id="staffTicketsModal">
+        <div class="modal-content" style="max-width: 650px;">
+            <span class="close-btn" onclick="closeModal('staffTicketsModal')">&times;</span>
+            <h2 style="color: var(--primary); margin-top:0; border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">🎫 لوحة تذاكر العاملين والشكاوى</h2>
+            <p style="font-size: 13px; color: #a3b899; margin-bottom: 20px;">اضغط على اسم العميل لفتح المحادثة المنفصلة والرد عليه مباشرة.</p>
+            
+            <!-- قائمة لعرض العملاء الذين أرسلوا تذاكر -->
+            <div id="staffTicketsList" style="max-height: 200px; overflow-y: auto; margin-bottom: 15px;"></div>
+            
+            <!-- صندوق الدردشة للمحادثة النشطة المحددة -->
+            <div id="activeChatSection" class="active-staff-chat" style="display: none;">
+                <h4 id="activeChatTitle" style="color: var(--primary); margin: 0 0 10px 0;"></h4>
                 <div class="chat-container" id="adminChatBox"></div>
                 <div class="chat-input">
                     <input type="text" id="adminChatInput" placeholder="اكتب رد الموظف المسؤول هنا...">
@@ -373,7 +419,6 @@
         </div>
     </div>
 
-    <!-- ملف برمجة التفاعل الفوري للمنصة -->
     <script src="app.js"></script>
 </body>
 </html>
