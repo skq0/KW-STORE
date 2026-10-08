@@ -44,9 +44,17 @@ function checkAndPromptUserIdentity() {
 document.addEventListener('DOMContentLoaded', () => {
     checkAndPromptUserIdentity();
 
-    if (!localStorage.getItem('kw_roles')) {
-        localStorage.setItem('kw_roles', JSON.stringify(["مدير العام", "مسؤول شكاوى", "دعم فني مستوى 1", "SuperVisor"]));
+    // تطوير نظام الرتب ليدعم الكائنات بدلاً من المصفوفة العادية
+    if (!localStorage.getItem('kw_roles_v2')) {
+        const defaultRoles = [
+            { id: 1, name: "مدير العام", permissions: { viewComplaints: true, reply: true, editPrices: true, manageEmployees: true } },
+            { id: 2, name: "مسؤول شكاوى", permissions: { viewComplaints: true, reply: true, editPrices: false, manageEmployees: false } },
+            { id: 3, name: "دعم فني مستوى 1", permissions: { viewComplaints: true, reply: false, editPrices: false, manageEmployees: false } },
+            { id: 4, name: "SuperVisor", permissions: { viewComplaints: true, reply: true, editPrices: true, manageEmployees: false } }
+        ];
+        localStorage.setItem('kw_roles_v2', JSON.stringify(defaultRoles));
     }
+    
     if (!localStorage.getItem('kw_employees')) {
         localStorage.setItem('kw_employees', JSON.stringify([{ id: 100, name: "يوسف (المطور المسؤول)", role: "مدير العام" }]));
     }
@@ -56,7 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     renderRoles();
     renderEmployees();
-    renderChatBoxes();
+    // تأكد من وجود دالة renderChatBoxes في مكان آخر بكودك أو ملف منفصل حتى لا يحدث خطأ
+    if (typeof renderChatBoxes === "function") { renderChatBoxes(); }
     checkAdminAccess();
 });
 
@@ -169,16 +178,31 @@ function renderEmployees() {
     }
 }
 
+// ========================================================
+// النظام المطور والمحدث لإدارة الرتب والصلاحيات الدقيقة
+// ========================================================
+
 function addNewRole() {
-    const input = document.getElementById('roleInput');
+    const input = document.getElementById('roleInput'); // متوافق مع مُعرف الـ Input في لوحتك
     const roleName = input.value.trim();
     if (!roleName) return alert("من فضلك اكتب اسم الرتبة أولاً!");
 
-    let roles = JSON.parse(localStorage.getItem('kw_roles')) || [];
-    if (roles.includes(roleName)) return alert("هذه الرتبة موجودة بالفعل!");
+    let roles = JSON.parse(localStorage.getItem('kw_roles_v2')) || [];
+    if (roles.some(r => r.name.toLowerCase() === roleName.toLowerCase())) {
+        return alert("هذه الرتبة موجودة بالفعل!");
+    }
 
-    roles.push(roleName);
-    localStorage.setItem('kw_roles', JSON.stringify(roles));
+    const newId = roles.length > 0 ? Math.max(...roles.map(r => r.id)) + 1 : 1;
+    
+    // إنشاء الرتبة وإغلاق الصلاحيات افتراضياً لتتحكم بها يدوياً من الـ Checkboxes
+    const newRole = {
+        id: newId,
+        name: roleName,
+        permissions: { viewComplaints: false, reply: false, editPrices: false, manageEmployees: false }
+    };
+
+    roles.push(newRole);
+    localStorage.setItem('kw_roles_v2', JSON.stringify(roles));
     
     input.value = '';
     renderRoles();
@@ -186,30 +210,106 @@ function addNewRole() {
 }
 
 function renderRoles() {
-    const roles = JSON.parse(localStorage.getItem('kw_roles')) || [];
-    const rolesList = document.getElementById('rolesList');
-    const roleSelect = document.getElementById('empRoleSelect');
+    const roles = JSON.parse(localStorage.getItem('kw_roles_v2')) || [];
+    const rolesList = document.getElementById('rolesList'); // القائمة الكبيرة داخل المودال للتحكم
+    const roleSelect = document.getElementById('empRoleSelect'); // قائمة التحديد عند تعيين موظف جديد
 
+    // 1. توليد عناصر واجهة التحكم بالصلاحيات والتعديل والحذف
     if (rolesList) {
         rolesList.innerHTML = '';
         roles.forEach(role => {
             const div = document.createElement('div');
             div.className = 'data-item';
-            div.innerHTML = `<span>رتبة: ${role}</span><span style="color: var(--accent)">صلاحية مفعّلة</span>`;
+            // ستايل لعرض مرن يتناسب مع التصميم الزيتي والذهبي
+            div.style.display = 'flex';
+            div.style.flexDirection = 'column';
+            div.style.gap = '8px';
+            div.style.padding = '12px 8px';
+            div.style.borderBottom = '1px solid #1a3629';
+
+            div.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <span>رتبة: <strong style="color: #cda052;">${role.name}</strong></span>
+                    <div style="display: flex; gap: 6px;">
+                        <button onclick="editRoleName(${role.id})" style="background: none; border: 1px solid #cda052; color: #cda052; padding: 2px 8px; border-radius: 4px; cursor: pointer; font-size: 11px;">📝 تعديل الاسم</button>
+                        <button onclick="deleteRole(${role.id})" style="background: none; border: 1px solid #ff4d4d; color: #ff4d4d; padding: 2px 8px; border-radius: 4px; cursor: pointer; font-size: 11px;">❌ حذف</button>
+                    </div>
+                </div>
+                
+                <!-- عرض الصلاحيات الدقيقة على شكل خانات خيارات قابلة للتعديل الفوري -->
+                <div style="display: flex; flex-wrap: wrap; gap: 12px; background: #06110b; padding: 6px; border-radius: 4px; width: 100%;">
+                    <label style="font-size: 12px; color: #28a745; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                        <input type="checkbox" ${role.permissions.viewComplaints ? 'checked' : ''} onchange="togglePermission(${role.id}, 'viewComplaints', this.checked)"> رؤية الشكاوى
+                    </label>
+                    <label style="font-size: 12px; color: #28a745; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                        <input type="checkbox" ${role.permissions.reply ? 'checked' : ''} onchange="togglePermission(${role.id}, 'reply', this.checked)"> الرد
+                    </label>
+                    <label style="font-size: 12px; color: #28a745; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                        <input type="checkbox" ${role.permissions.editPrices ? 'checked' : ''} onchange="togglePermission(${role.id}, 'editPrices', this.checked)"> تعديل الأسعار
+                    </label>
+                    <label style="font-size: 12px; color: #28a745; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                        <input type="checkbox" ${role.permissions.manageEmployees ? 'checked' : ''} onchange="togglePermission(${role.id}, 'manageEmployees', this.checked)"> إدارة الموظفين
+                    </label>
+                </div>
+            `;
             rolesList.appendChild(div);
         });
     }
 
+    // 2. تحديث قائمة الـ Select الخاصة بإنشاء الموظفين تلقائياً
     if (roleSelect) {
         roleSelect.innerHTML = '';
         roles.forEach(role => {
             const opt = document.createElement('option');
-            opt.value = role;
-            opt.innerText = role;
+            opt.value = role.name;
+            opt.innerText = role.name;
             roleSelect.appendChild(opt);
         });
     }
 }
+
+// دالة تعديل اسم الرتبة
+function editRoleName(roleId) {
+    let roles = JSON.parse(localStorage.getItem('kw_roles_v2'));
+    let role = roles.find(r => r.id === roleId);
+    
+    if (role) {
+        let newName = prompt(`تعديل اسم رتبة (${role.name}) إلى:`, role.name);
+        if (newName && newName.trim() !== "") {
+            role.name = newName.trim();
+            localStorage.setItem('kw_roles_v2', JSON.stringify(roles));
+            renderRoles(); // تحديث فوري لكافة العناصر والـ select
+        }
+    }
+}
+
+// دالة حذف الرتبة نهائياً من الـ LocalStorage
+function deleteRole(roleId) {
+    let roles = JSON.parse(localStorage.getItem('kw_roles_v2'));
+    let role = roles.find(r => r.id === roleId);
+    
+    if (role) {
+        if (confirm(`هل أنت متأكد من حذف رتبة (${role.name}) نهائياً؟`)) {
+            roles = roles.filter(r => r.id !== roleId);
+            localStorage.setItem('kw_roles_v2', JSON.stringify(roles));
+            renderRoles(); // تحديث تلقائي
+        }
+    }
+}
+
+// دالة تحديث الصلاحية الفردية عند الضغط على الـ Checkbox وحفظها فورياً
+function togglePermission(roleId, permissionKey, isChecked) {
+    let roles = JSON.parse(localStorage.getItem('kw_roles_v2'));
+    let role = roles.find(r => r.id === roleId);
+    
+    if (role) {
+        role.permissions[permissionKey] = isChecked;
+        localStorage.setItem('kw_roles_v2', JSON.stringify(roles));
+        console.log(`تم تحديث صلاحية [${permissionKey}] للرتبة [${role.name}] لـ: ${isChecked}`);
+    }
+}
+
+// ========================================================
 
 function sendTicketMessage() {
     const input = document.getElementById('chatInput');
@@ -232,39 +332,7 @@ function sendAdminReply() {
 
 function saveMessage(text, sender) {
     let chatLog = JSON.parse(localStorage.getItem('kw_chat')) || [];
-    chatLog.push({ text, sender, time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) });
+    chatLog.push({ text, sender, time: new Date().toLocaleTimeString() });
     localStorage.setItem('kw_chat', JSON.stringify(chatLog));
-    renderChatBoxes();
-}
-
-function renderChatBoxes() {
-    const chatLog = JSON.parse(localStorage.getItem('kw_chat')) || [];
-    const clientBox = document.getElementById('chatBox');
-    const adminBox = document.getElementById('adminChatBox');
-
-    if (clientBox) {
-        clientBox.innerHTML = '';
-        chatLog.forEach(msg => {
-            const div = document.createElement('div');
-            div.className = `msg ${msg.sender}`;
-            div.innerText = msg.text;
-            clientBox.appendChild(div);
-        });
-        clientBox.scrollTop = clientBox.scrollHeight;
-    }
-
-    if (adminBox) {
-        adminBox.innerHTML = '';
-        if (chatLog.length === 0) {
-            adminBox.innerHTML = '<div class="data-item" style="color:#a3b899; border:none;">لا توجد شكاوى حالياً.</div>';
-        } else {
-            chatLog.forEach(msg => {
-                const div = document.createElement('div');
-                div.className = 'data-item';
-                div.innerHTML = `<span>${msg.text}</span><small style="color:#557755">${msg.time}</small>`;
-                adminBox.appendChild(div);
-            });
-            adminBox.scrollTop = adminBox.scrollHeight;
-        }
-    }
+    if (typeof renderChatBoxes === "function") { renderChatBoxes(); }
 }
