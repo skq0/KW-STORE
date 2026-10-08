@@ -92,7 +92,7 @@ function openModal(id) {
 function closeModal(id) { if (document.getElementById(id)) { document.getElementById(id).style.display = "none"; } }
 function loginAsAdmin() {
     var pass = prompt("ادخل الرقم السري للمطور يوسف لفتح الإعدادات:");
-    if (pass === "youssef2026") {
+    if (pass === "123456") {
         localStorage.setItem("kw_isAdmin", "true");
         alert("🔓 تم تفعيل وضع المسؤول بنجاح!");
         location.reload();
