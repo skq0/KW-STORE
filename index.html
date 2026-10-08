@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Youssef Tech | حلول البرمجيات الذكية للأعمال</title>
+    <title>KW STORE | حلول البرمجيات الذكية للأعمال</title>
     <style>
         :root {
             --bg-color: #0b130e;
@@ -27,28 +27,23 @@
             width: 100%;
             top: 0; z-index: 1000;
             display: flex;
-            justify-content: space-between;
+            justify-content: center; /* جعل الهيدر مرن ومتوسط في الشاشة */
             align-items: center;
             padding: 15px 50px;
             box-sizing: border-box;
         }
         .logo {
             color: var(--primary);
-            font-size: 22px;
+            font-size: 32px; /* حجم كبير وفخم للاسم الجديد */
             font-weight: bold;
-            text-shadow: 0 0 10px rgba(205,155,50,0.3);
+            text-shadow: 0 0 15px rgba(205, 155, 50, 0.6);
+            letter-spacing: 2px;
+            text-align: center;
+            margin: 0 auto; /* توسيط إجباري في السنتر تماماً ومسح المحاذاة اليمينية القديمة */
         }
-        nav a {
-            color: var(--text);
-            text-decoration: none;
-            margin-right: 20px;
-            font-weight: 500;
-            transition: 0.3s;
-        }
-        nav a:hover { color: var(--accent); }
         
         .hero {
-            padding: 150px 20px 80px 20px;
+            padding: 180px 20px 80px 20px;
             text-align: center;
             background: linear-gradient(180px, rgba(0,255,102,0.05) 0%, transparent 100%);
         }
@@ -107,7 +102,7 @@
         }
         .product-card:hover {
             border-color: var(--primary);
-            transform: translateY(-50px);
+            transform: translateY(-10px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
         .product-card h3 { color: #fff; margin-top: 0; font-size: 20px; }
@@ -153,12 +148,8 @@
 <body>
 
     <header>
-        <div class="logo">YOUSSEF TECH</div>
-        <nav>
-            <a href="#home">الرئيسية</a>
-            <a href="#products">أنظمتنا</a>
-            <a href="#contact">طلب ديمو</a>
-        </nav>
+        <!-- هنا تم تغيير الاسم إلى KW STORE وضبط التوسيط التام في الهيدر -->
+        <div class="logo">KW STORE</div>
     </header>
 
     <section class="hero" id="home">
@@ -211,7 +202,7 @@
     </section>
 
     <footer>
-        جميع الحقوق محفوظة © 2026 لشركة Youssef Tech Solutions | إعداد الطالب يوسف محمود إسماعيل
+        جميع الحقوق محفوظة © 2026 لشركة KW STORE | المطور و المسؤول يوسف 
     </footer>
 
     <script src="app.js"></script>
