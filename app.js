@@ -68,18 +68,24 @@ function closeModal(id) {
     document.getElementById(id).style.display = 'none';
 }
 
+// دالة طلب الباسورد السري لفتح وضع المسؤول (الأدمن)
+function loginAsAdmin() {
+    let password = prompt("ادخل الرقم السري للمطور يوسف لفتح الإعدادات:");
+    if (password === "youssef2026") {
+        localStorage.setItem('kw_isAdmin', 'true');
+        checkAdminAccess();
+        alert("🔓 تم تفعيل وضع المسؤول بنجاح! ظهر زر الإعدادات في الهيدر فوق.");
+    } else {
+        alert("❌ الرقم السري خاطئ! حاول مجدداً.");
+    }
+}
+
 function checkAdminAccess() {
     const adminNavBtn = document.getElementById('admin-nav-btn');
     const isOwner = localStorage.getItem('kw_isAdmin') === 'true';
     if (adminNavBtn) {
         adminNavBtn.style.display = isOwner ? 'inline-block' : 'none';
     }
-}
-
-function toggleAdminView(status) {
-    localStorage.setItem('kw_isAdmin', status);
-    checkAdminAccess();
-    console.log(status ? "وضع المسؤول نشط" : "وضع الزبون نشط");
 }
 
 function toggleUsersDirectory() {
@@ -145,7 +151,7 @@ function assignEmployee() {
 
     inputField.value = '';
     renderEmployees();
-    alert(`تم تعيين (\${finalName}) بنجاح كـ: \${selectedRole}`);
+    alert(`تم تعيين (${finalName}) بنجاح كـ: ${selectedRole}`);
 }
 
 function renderEmployees() {
@@ -157,7 +163,7 @@ function renderEmployees() {
         employees.forEach(emp => {
             const div = document.createElement('div');
             div.className = 'data-item';
-            div.innerHTML = `<span>\${emp.name} [ID: \${emp.id}]</span><span style="color: var(--primary)">\${emp.role}</span>`;
+            div.innerHTML = `<span>${emp.name} [ID: ${emp.id}]</span><span style="color: var(--primary)">${emp.role}</span>`;
             empList.appendChild(div);
         });
     }
@@ -176,7 +182,7 @@ function addNewRole() {
     
     input.value = '';
     renderRoles();
-    alert(`تم بنجاح إنشاء رتبة: \${roleName}`);
+    alert(`تم بنجاح إنشاء رتبة: ${roleName}`);
 }
 
 function renderRoles() {
@@ -189,7 +195,7 @@ function renderRoles() {
         roles.forEach(role => {
             const div = document.createElement('div');
             div.className = 'data-item';
-            div.innerHTML = `<span>رتبة: \${role}</span><span style="color: var(--accent)">صلاحية مفعّلة</span>`;
+            div.innerHTML = `<span>رتبة: ${role}</span><span style="color: var(--accent)">صلاحية مفعّلة</span>`;
             rolesList.appendChild(div);
         });
     }
@@ -211,7 +217,7 @@ function sendTicketMessage() {
     if (!text) return;
 
     let currentName = localStorage.getItem('kw_my_name') || 'زبون';
-    saveMessage(`\${currentName}: \${text}`, 'client');
+    saveMessage(`${currentName}: ${text}`, 'client');
     input.value = '';
 }
 
@@ -220,7 +226,7 @@ function sendAdminReply() {
     const text = input.value.trim();
     if (!text) return;
 
-    saveMessage(`الموظف: \${text}`, 'staff');
+    saveMessage(`الموظف: ${text}`, 'staff');
     input.value = '';
 }
 
@@ -240,7 +246,7 @@ function renderChatBoxes() {
         clientBox.innerHTML = '';
         chatLog.forEach(msg => {
             const div = document.createElement('div');
-            div.className = `msg \${msg.sender}`;
+            div.className = `msg ${msg.sender}`;
             div.innerText = msg.text;
             clientBox.appendChild(div);
         });
@@ -255,7 +261,7 @@ function renderChatBoxes() {
             chatLog.forEach(msg => {
                 const div = document.createElement('div');
                 div.className = 'data-item';
-                div.innerHTML = `<span>\${msg.text}</span><small style="color:#557755">\${msg.time}</small>`;
+                div.innerHTML = `<span>${msg.text}</span><small style="color:#557755">${msg.time}</small>`;
                 adminBox.appendChild(div);
             });
             adminBox.scrollTop = adminBox.scrollHeight;
