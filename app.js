@@ -1,6 +1,6 @@
 function loginAsAdmin() {
     var pass = prompt("ادخل الرقم السري للمطور يوسف لفتح الإعدادات:");
-    if (pass === "youssef2026") {
+    if (pass === "123456") {
         localStorage.setItem("kw_isAdmin", "true");
         localStorage.setItem("kw_my_id", "100");
         localStorage.setItem("kw_my_name", "يوسف (المطور المسؤول)");
