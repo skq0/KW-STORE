@@ -1,3 +1,26 @@
+function loginAsAdmin() {
+    var pass = prompt("ادخل الرقم السري للمطور يوسف لفتح الإعدادات:");
+    if (pass === "youssef2026") {
+        localStorage.setItem("kw_isAdmin", "true");
+        localStorage.setItem("kw_my_id", "100");
+        localStorage.setItem("kw_my_name", "يوسف (المطور المسؤول)");
+        
+        var emps = localStorage.getItem("kw_employees") ? JSON.parse(localStorage.getItem("kw_employees")) : [];
+        var exist = false;
+        for (var i = 0; i < emps.length; i++) {
+            if (emps[i].id.toString() === "100") { exist = true; break; }
+        }
+        if (!exist) {
+            emps.push({ id: "100", name: "يوسف (المطور المسؤول)", role: "مدير العام" });
+            localStorage.setItem("kw_employees", JSON.stringify(emps));
+        }
+        
+        alert("🔓 تم تفعيل وضع المسؤول وترقيتك لمدير عام بنجاح!");
+        location.reload();
+    } else {
+        alert("❌ الرقم السري خاطئ!");
+    }
+}
 var activeRoom = null;
 
 function get(k, def) {
