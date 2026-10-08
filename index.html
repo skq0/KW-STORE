@@ -5,13 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KW STORE | حلول البرمجيات الذكية للأعمال</title>
     <style>
+        /* =========================================================
+           1. الألوان والمتغيرات الأساسية (الهوية البصرية للمتجر)
+           ========================================================= */
         :root {
             --bg-color: #0b130e;
             --card-bg: #122218;
             --primary: #cd9b32;
             --accent: #00ff66;
             --text: #e2e8f0;
+            --border-color: #223a2a;
         }
+
+        /* =========================================================
+           2. التنسيقات العامة وعناصر الصفحات
+           ========================================================= */
         body {
             background-color: var(--bg-color);
             color: var(--text);
@@ -20,6 +28,10 @@
             padding: 0;
             scroll-behavior: smooth;
         }
+
+        /* =========================================================
+           3. شريط التنقل العلوي (الهيدر والأزرار)
+           ========================================================= */
         header {
             background: rgba(11, 19, 14, 0.95);
             border-bottom: 1px solid rgba(205, 155, 50, 0.2);
@@ -27,21 +39,84 @@
             width: 100%;
             top: 0; z-index: 1000;
             display: flex;
-            justify-content: center; /* جعل الهيدر مرن ومتوسط في الشاشة */
+            justify-content: space-between;
             align-items: center;
             padding: 15px 50px;
             box-sizing: border-box;
         }
         .logo {
             color: var(--primary);
-            font-size: 32px; /* حجم كبير وفخم للاسم الجديد */
+            font-size: 32px;
             font-weight: bold;
             text-shadow: 0 0 15px rgba(205, 155, 50, 0.6);
             letter-spacing: 2px;
             text-align: center;
-            margin: 0 auto; /* توسيط إجباري في السنتر تماماً ومسح المحاذاة اليمينية القديمة */
+            margin: 0 auto;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
         }
-        
+        .header-left {
+            display: flex;
+            gap: 10px;
+            z-index: 1001;
+        }
+        .header-right {
+            z-index: 1001;
+        }
+
+        /* =========================================================
+           4. أزرار التحكم العام والتفاعل
+           ========================================================= */
+        .btn-main {
+            background: var(--primary);
+            color: #000;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn-main:hover {
+            background: var(--accent);
+            box-shadow: 0 0 15px var(--accent);
+            transform: scale(1.05);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-outline:hover {
+            background: var(--primary);
+            color: #000;
+        }
+        #admin-nav-btn {
+            background: #d9534f;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none; /* مخفي افتراضياً عن الزبائن العاديين */
+        }
+
+        /* =========================================================
+           5. قسم البطل الرئيسي (Hero Section)
+           ========================================================= */
         .hero {
             padding: 180px 20px 80px 20px;
             text-align: center;
@@ -59,24 +134,10 @@
             max-width: 600px;
             margin: 0 auto 30px auto;
         }
-        .btn-main {
-            background: var(--primary);
-            color: #000;
-            padding: 12px 30px;
-            font-size: 16px;
-            font-weight: bold;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.3s;
-            text-decoration: none;
-        }
-        .btn-main:hover {
-            background: var(--accent);
-            box-shadow: 0 0 15px var(--accent);
-            transform: scale(1.05);
-        }
 
+        /* =========================================================
+           6. شبكة المنتجات والأنظمة (Products Grid & Cards)
+           ========================================================= */
         .section-title {
             text-align: center;
             font-size: 28px;
@@ -99,6 +160,9 @@
             box-sizing: border-box;
             text-align: right;
             transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         .product-card:hover {
             border-color: var(--primary);
@@ -106,9 +170,12 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
         .product-card h3 { color: #fff; margin-top: 0; font-size: 20px; }
-        .product-card ul { padding-right: 20px; color: #a3b899; font-size: 14px; line-height: 1.8; }
+        .product-card ul { padding-right: 20px; color: #a3b899; font-size: 14px; line-height: 1.8; margin-bottom: auto;}
         .price { font-size: 24px; color: var(--accent); font-weight: bold; margin: 20px 0; }
 
+        /* =========================================================
+           7. قسم نموذج التواصل والطلبات (Contact Section)
+           ========================================================= */
         .contact-section {
             background: rgba(18, 34, 24, 0.5);
             padding: 40px 20px;
@@ -143,26 +210,112 @@
             border-top: 1px solid rgba(255,255,255,0.05);
             margin-top: 40px;
         }
+
+        /* =========================================================
+           8. النوافذ المنبثقة للأنظمة (Modals, Chat & Control Panels)
+           ========================================================= */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--primary);
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%; max-width: 550px;
+            max-height: 85vh; overflow-y: auto;
+            position: relative;
+        }
+        .close-btn {
+            position: absolute; top: 15px; left: 15px;
+            font-size: 24px; color: #a3b899; cursor: pointer;
+        }
+        .close-btn:hover { color: var(--primary); }
+        
+        .chat-container {
+            border: 1px solid var(--border-color);
+            background: #050a06;
+            height: 250px; overflow-y: auto;
+            border-radius: 5px; padding: 15px;
+            display: flex; flex-direction: column; gap: 10px; margin: 15px 0;
+        }
+        .msg { padding: 10px 15px; border-radius: 8px; max-width: 80%; font-size: 14px; }
+        .msg.client { background: #223a2a; align-self: flex-start; }
+        .msg.staff { background: var(--primary); color: #000; align-self: flex-end; font-weight: bold; }
+        
+        .chat-input { display: flex; gap: 10px; }
+        .chat-input input { flex: 1; }
+
+        .panel-row {
+            border-bottom: 1px solid #223a2a;
+            padding: 15px 0;
+        }
+        .panel-row h4 { margin: 0 0 10px 0; color: var(--primary); }
+        .data-list { background: #050a06; padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 14px; }
+        .data-item { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
     </style>
 </head>
 <body>
 
+    <!-- =========================================================
+       شريط التنقل العلوي (Header)
+       ========================================================= -->
     <header>
-        <!-- هنا تم تغيير الاسم إلى KW STORE وضبط التوسيط التام في الهيدر -->
+        <div class="header-right">
+            <button class="btn-outline" onclick="openModal('supportModal')">تقديم شكوى / دعم فني</button>
+        </div>
         <div class="logo">KW STORE</div>
+        <div class="header-left">
+            <button id="admin-nav-btn" onclick="openModal('adminModal')">⚙️ إعدادات الصفحة</button>
+        </div>
     </header>
 
+        <!-- =========================================================
+       5. قسم الواجهة الرئيسي للموقع (Hero Section)
+       ========================================================= -->
     <section class="hero" id="home">
         <h1>إدارة أعمالك أصبحت <span>أسهل وأكثر أماناً</span></h1>
         <p>نحن نصنع برمجيات مخصصة وحلول كاشير ذكية مصممة خصيصاً لمساعدة المطاعم والسوبر ماركت على تنظيم حساباتهم ومخازنهم بدقة متناهية.</p>
         <a href="#contact" class="btn-main">اطلب نسختك التجريبية الآن</a>
     </section>
 
+    <!-- =========================================================
+       6. شبكة المنتجات والأنظمة (Products Grid & Cards)
+       ========================================================= -->
     <section id="products">
         <div class="section-title">أنظمة إدارة الأعمال الاحترافية</div>
         <div class="products-grid">
             
-            <!-- كارت نظام المطاعم -->
+            <!-- كارت 1: صناعة برامج مخصصة للعمل -->
+            <div class="product-card">
+                <h3>🛠️ صناعة برامج مخصصة للأعمال</h3>
+                <ul>
+                    <li>بناء أنظمة سحابية متكاملة تماماً من الصفر لتناسب شركتك.</li>
+                    <li>تصميم قواعد بيانات آمنة وقوية تحت تحكمك الكامل.</li>
+                    <li>ربط الأنظمة وتوفير لوحات تحكم متقدمة ومحمية.</li>
+                </ul>
+                <div class="price">تواصل معنا لمعرفة السعر</div>
+                <button class="btn-main" style="width: 100%;" onclick="orderSystem('صناعة برامج مخصصة للعمل')">طلب النظام</button>
+            </div>
+
+            <!-- كارت 2: تصميم مخصص وواجهات (UI/UX) -->
+            <div class="product-card">
+                <h3>🎨 تصميم مخصص وهندسة واجهات (UI/UX)</h3>
+                <ul>
+                    <li>تصميم واجهات وتطبيقات فريدة تعكس قوة هويتك التجارية.</li>
+                    <li>دراسة وتطوير رحلة العميل لضمان سهولة وسرعة التصفح.</li>
+                    <li>تسليم ملفات التصميم الهندسية مفتوحة المصدر بالكامل.</li>
+                </ul>
+                <div class="price">تواصل معنا لمعرفة السعر</div>
+                <button class="btn-main" style="width: 100%;" onclick="orderSystem('تصميم مخصص وواجهات')">طلب النظام</button>
+            </div>
+            
+            <!-- كارت 3: نظام المطاعم (القديم) -->
             <div class="product-card">
                 <h3>🍽️ نظام إدارة المطاعم والكافيهات الذكي</h3>
                 <ul>
@@ -175,7 +328,7 @@
                 <button class="btn-main" style="width: 100%;" onclick="orderSystem('نظام المطاعم')">طلب النظام</button>
             </div>
 
-            <!-- كارت نظام السوبر ماركت -->
+            <!-- كارت 4: نظام السوبر ماركت (القديم) -->
             <div class="product-card">
                 <h3>🛒 نظام إدارة السوبر ماركت ونقاط البيع</h3>
                 <ul>
@@ -191,6 +344,76 @@
         </div>
     </section>
 
+    <!-- =========================================================
+       7. نافذة الدعم الفني والشكاوى الحية (Support Modal)
+       ========================================================= -->
+    <div id="supportModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('supportModal')">&times;</span>
+            <h3 style="color: var(--primary); margin-top: 0;">مركز الدعم الفني والشكاوى المباشر</h3>
+            <p style="font-size: 13px; color: #a3b899;">محادثة حية لمتابعة شكواك فوراً داخل البرنامج وليس مجرد طلب عادٍ.</p>
+            <div class="chat-container" id="chatBox">
+                <div class="msg staff">مرحباً بك في KW STORE، اكتب لنا تفاصيل شكواك وسيرد عليك الموظف المسؤول في هذه الغرفة.</div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="اكتب شكواك أو ردك هنا...">
+                <button class="btn-main" style="padding: 10px 20px;" onclick="sendTicketMessage()">إرسال</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+       8. لوحة التحكم وإدارة الرتب والموظفين السرية (Admin Panel Modal)
+       ========================================================= -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('adminModal')">&times;</span>
+            <h3 style="color: var(--primary); margin-top: 0;">لوحة تحكم المشرفين وإدارة الرتب</h3>
+            
+            <!-- أ. إدارة أسماء الرتب وصلاحياتها -->
+            <div class="panel-row">
+                <h4>إنشاء وتسمية رتبة جديدة للموظفين</h4>
+                <div class="chat-input">
+                    <input type="text" id="roleInput" placeholder="مثال: مسؤول شكاوى، مدير دعم فني">
+                    <button class="btn-main" style="padding: 10px 20px;" onclick="addNewRole()">إضافة رتبة</button>
+                </div>
+                <div class="data-list" id="rolesList">
+                    <div class="data-item"><span>رتبة افتراضية: مدير العام</span><span style="color: var(--accent)">كل الصلاحيات</span></div>
+                </div>
+            </div>
+
+            <!-- ب. تعيين موظفين جدد بالرتب المكتوبة -->
+            <div class="panel-row">
+                <h4>تعيين موظف برتبة وصلاحيات محددة</h4>
+                <div class="chat-input" style="flex-direction: column; gap: 10px;">
+                    <input type="text" id="empNameInput" placeholder="اسم الموظف بالكامل">
+                    <select id="empRoleSelect" style="background: #050a06; border:1px solid #223a2a; color:#fff; padding:12px; border-radius:5px;">
+                        <option value="مدير العام">مدير العام</option>
+                    </select>
+                    <button class="btn-main" onclick="assignEmployee()">تعيين الموظف داخل النظام</button>
+                </div>
+                <div class="data-list" id="empList">
+                    <div class="data-item"><span>يوسف (المطور المسؤول)</span><span style="color: var(--primary)">مدير العام</span></div>
+                </div>
+            </div>
+
+            <!-- ج. شاشة مراقبة شات الشكاوى -->
+            <div class="panel-row">
+                <h4>غرفة مراقبة الشكاوى والرد عليها</h4>
+                <div class="chat-container" id="adminChatBox" style="height: 150px;">
+                    <div class="data-item" style="color:#a3b899; border:none;">لا توجد رسائل شكاوى جديدة مسجلة حالياً.</div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="adminChatInput" placeholder="اكتب الرد الرسمي للموظف...">
+                    <button class="btn-main" style="padding: 10px 20px;" onclick="sendAdminReply()">إرسال الرد</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+       9. قسم نموذج التواصل والطلبات (Contact Section)
+       ========================================================= -->
     <section class="contact-section" id="contact">
         <div class="section-title" style="margin-top:0;">تواصل معنا لطلب نسخة تجريبية</div>
         <form id="contactForm" onsubmit="handleForm(event)">
@@ -201,10 +424,14 @@
         </form>
     </section>
 
+    <!-- =========================================================
+       10. تذييل الصفحة وحقوق الملكية (Footer)
+       ========================================================= -->
     <footer>
         جميع الحقوق محفوظة © 2026 لشركة KW STORE | المطور و المسؤول يوسف 
     </footer>
 
+    <!-- ربط ملف التفاعل الرئيسي للموقع (app.js) -->
     <script src="app.js"></script>
 </body>
 </html>
