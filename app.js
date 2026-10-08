@@ -41,10 +41,12 @@ function checkAndPromptUserIdentity() {
     }
 }
 
+// متغير لتخزين المعرف الخاص بالمحادثة النشطة حالياً في شاشة الموظفين
+let activeClientChatID = null;
+
 document.addEventListener('DOMContentLoaded', () => {
     checkAndPromptUserIdentity();
 
-    // تطوير نظام الرتب ليدعم الكائنات بدلاً من المصفوفة العادية
     if (!localStorage.getItem('kw_roles_v2')) {
         const defaultRoles = [
             { id: 1, name: "مدير العام", permissions: { viewComplaints: true, reply: true, editPrices: true, manageEmployees: true } },
@@ -64,26 +66,27 @@ document.addEventListener('DOMContentLoaded', () => {
     
     renderRoles();
     renderEmployees();
-    // تأكد من وجود دالة renderChatBoxes في مكان آخر بكودك أو ملف منفصل حتى لا يحدث خطأ
-    if (typeof renderChatBoxes === "function") { renderChatBoxes(); }
+    renderChatBoxes();
     checkAdminAccess();
 });
 
 function openModal(id) {
     document.getElementById(id).style.display = 'flex';
+    if(id === 'staffTicketsModal') {
+        renderStaffTicketsList();
+    }
 }
 
 function closeModal(id) {
     document.getElementById(id).style.display = 'none';
 }
 
-// دالة طلب الباسورد السري لفتح وضع المسؤول (الأدمن)
 function loginAsAdmin() {
     let password = prompt("ادخل الرقم السري للمطور يوسف لفتح الإعدادات:");
     if (password === "youssef2026") {
         localStorage.setItem('kw_isAdmin', 'true');
         checkAdminAccess();
-        alert("🔓 تم تفعيل وضع المسؤول بنجاح! ظهر زر الإعدادات في الهيدر فوق.");
+        alert("🔓 تم تفعيل وضع المسؤول والموظفين بنجاح! ظهرت الأزرار الخاصة بك في الأعلى.");
     } else {
         alert("❌ الرقم السري خاطئ! حاول مجدداً.");
     }
@@ -91,9 +94,15 @@ function loginAsAdmin() {
 
 function checkAdminAccess() {
     const adminNavBtn = document.getElementById('admin-nav-btn');
+    const staffNavBtn = document.getElementById('staff-nav-btn');
     const isOwner = localStorage.getItem('kw_isAdmin') === 'true';
+    
+    // إظهار زر الإعدادات وزر تذاكر العاملين للموظفين فقط
     if (adminNavBtn) {
         adminNavBtn.style.display = isOwner ? 'inline-block' : 'none';
+    }
+    if (staffNavBtn) {
+        staffNavBtn.style.display = isOwner ? 'inline-block' : 'none';
     }
 }
 
@@ -178,12 +187,8 @@ function renderEmployees() {
     }
 }
 
-// ========================================================
-// النظام المطور والمحدث لإدارة الرتب والصلاحيات الدقيقة
-// ========================================================
-
 function addNewRole() {
-    const input = document.getElementById('roleInput'); // متوافق مع مُعرف الـ Input في لوحتك
+    const input = document.getElementById('roleInput');
     const roleName = input.value.trim();
     if (!roleName) return alert("من فضلك اكتب اسم الرتبة أولاً!");
 
@@ -194,7 +199,6 @@ function addNewRole() {
 
     const newId = roles.length > 0 ? Math.max(...roles.map(r => r.id)) + 1 : 1;
     
-    // إنشاء الرتبة وإغلاق الصلاحيات افتراضياً لتتحكم بها يدوياً من الـ Checkboxes
     const newRole = {
         id: newId,
         name: roleName,
@@ -211,16 +215,14 @@ function addNewRole() {
 
 function renderRoles() {
     const roles = JSON.parse(localStorage.getItem('kw_roles_v2')) || [];
-    const rolesList = document.getElementById('rolesList'); // القائمة الكبيرة داخل المودال للتحكم
-    const roleSelect = document.getElementById('empRoleSelect'); // قائمة التحديد عند تعيين موظف جديد
+    const rolesList = document.getElementById('rolesList');
+    const roleSelect = document.getElementById('empRoleSelect');
 
-    // 1. توليد عناصر واجهة التحكم بالصلاحيات والتعديل والحذف
     if (rolesList) {
         rolesList.innerHTML = '';
         roles.forEach(role => {
             const div = document.createElement('div');
             div.className = 'data-item';
-            // ستايل لعرض مرن يتناسب مع التصميم الزيتي والذهبي
             div.style.display = 'flex';
             div.style.flexDirection = 'column';
             div.style.gap = '8px';
@@ -236,7 +238,6 @@ function renderRoles() {
                     </div>
                 </div>
                 
-                <!-- عرض الصلاحيات الدقيقة على شكل خانات خيارات قابلة للتعديل الفوري -->
                 <div style="display: flex; flex-wrap: wrap; gap: 12px; background: #06110b; padding: 6px; border-radius: 4px; width: 100%;">
                     <label style="font-size: 12px; color: #28a745; cursor: pointer; display: flex; align-items: center; gap: 4px;">
                         <input type="checkbox" ${role.permissions.viewComplaints ? 'checked' : ''} onchange="togglePermission(${role.id}, 'viewComplaints', this.checked)"> رؤية الشكاوى
@@ -256,7 +257,6 @@ function renderRoles() {
         });
     }
 
-    // 2. تحديث قائمة الـ Select الخاصة بإنشاء الموظفين تلقائياً
     if (roleSelect) {
         roleSelect.innerHTML = '';
         roles.forEach(role => {
@@ -268,7 +268,6 @@ function renderRoles() {
     }
 }
 
-// دالة تعديل اسم الرتبة
 function editRoleName(roleId) {
     let roles = JSON.parse(localStorage.getItem('kw_roles_v2'));
     let role = roles.find(r => r.id === roleId);
@@ -278,12 +277,12 @@ function editRoleName(roleId) {
         if (newName && newName.trim() !== "") {
             role.name = newName.trim();
             localStorage.setItem('kw_roles_v2', JSON.stringify(roles));
-            renderRoles(); // تحديث فوري لكافة العناصر والـ select
+            renderRoles();
         }
     }
 }
 
-// دالة حذف الرتبة نهائياً من الـ LocalStorage
+// دالة حذف الرتبة
 function deleteRole(roleId) {
     let roles = JSON.parse(localStorage.getItem('kw_roles_v2'));
     let role = roles.find(r => r.id === roleId);
@@ -292,12 +291,11 @@ function deleteRole(roleId) {
         if (confirm(`هل أنت متأكد من حذف رتبة (${role.name}) نهائياً؟`)) {
             roles = roles.filter(r => r.id !== roleId);
             localStorage.setItem('kw_roles_v2', JSON.stringify(roles));
-            renderRoles(); // تحديث تلقائي
+            renderRoles();
         }
     }
 }
 
-// دالة تحديث الصلاحية الفردية عند الضغط على الـ Checkbox وحفظها فورياً
 function togglePermission(roleId, permissionKey, isChecked) {
     let roles = JSON.parse(localStorage.getItem('kw_roles_v2'));
     let role = roles.find(r => r.id === roleId);
@@ -310,29 +308,151 @@ function togglePermission(roleId, permissionKey, isChecked) {
 }
 
 // ========================================================
+// التحديث الجديد والمطور لغرفة تذاكر العاملين المنفصلة
+// ========================================================
 
 function sendTicketMessage() {
     const input = document.getElementById('chatInput');
     const text = input.value.trim();
     if (!text) return;
 
-    let currentName = localStorage.getItem('kw_my_name') || 'زبون';
-    saveMessage(`${currentName}: ${text}`, 'client');
+    let currentName = localStorage.getItem('kw_my_name') || 'عميل جديد';
+    let currentID = localStorage.getItem('kw_my_id') || '100';
+
+    // العميل يرسل التذكرة وتضاف تلقائياً لرقم الـ ID الخاص به لتباع من تذاكر العاملين
+    saveMessage(text, 'client', currentName, currentID, currentID);
     input.value = '';
 }
 
 function sendAdminReply() {
     const input = document.getElementById('adminChatInput');
     const text = input.value.trim();
-    if (!text) return;
+    if (!text || !activeClientChatID) return;
 
-    saveMessage(`الموظف: ${text}`, 'staff');
+    let currentName = localStorage.getItem('kw_my_name') || 'المطور يوسف';
+    let currentID = localStorage.getItem('kw_my_id') || '100';
+
+    // الموظف يرد على تذكرة العميل النشط المحددة
+    saveMessage(text, 'staff', currentName, currentID, activeClientChatID);
     input.value = '';
 }
 
-function saveMessage(text, sender) {
+function saveMessage(text, sender, name, id, chatRoomID) {
     let chatLog = JSON.parse(localStorage.getItem('kw_chat')) || [];
-    chatLog.push({ text, sender, time: new Date().toLocaleTimeString() });
+    chatLog.push({ 
+        text: text, 
+        sender: sender, 
+        name: name, 
+        id: id,
+        chatRoomID: chatRoomID, // المعرف المخصص للغرفة لفصل المحادثات بالكامل
+        time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) 
+    });
     localStorage.setItem('kw_chat', JSON.stringify(chatLog));
-    if (typeof renderChatBoxes === "function") { renderChatBoxes(); }
+    renderChatBoxes();
+    renderStaffTicketsList();
+}
+
+// توليد قائمة أسماء وتذاكر العاملين بشكل منفصل ومنظم
+function renderStaffTicketsList() {
+    const listContainer = document.getElementById('staffTicketsList');
+    if (!listContainer) return;
+
+    const chatLog = JSON.parse(localStorage.getItem('kw_chat')) || [];
+    
+    // استخراج فريد لكل العملاء الذين أرسلوا رسائل
+    let clientsMap = {};
+    chatLog.forEach(msg => {
+        if(msg.sender === 'client') {
+            clientsMap[msg.chatRoomID] = msg.name;
+        }
+    });
+
+    listContainer.innerHTML = "";
+    const clientIDs = Object.keys(clientsMap);
+
+    if (clientIDs.length === 0) {
+        listContainer.innerHTML = '<div style="color:#a3b899; text-align:center; padding:10px;">لا توجد تذاكر أو محادثات نشطة حالياً.</div>';
+        return;
+    }
+
+    clientIDs.forEach(id => {
+        const div = document.createElement('div');
+        div.className = 'ticket-item';
+        div.innerHTML = `
+            <span>👤 تذكرة: <strong>${clientsMap[id]}</strong> (ID: ${id})</span>
+            <span style="color:var(--primary); font-size:12px;">اضغط لفتح المحادثة ←</span>
+        `;
+        div.onclick = () => selectActiveStaffChat(id, clientsMap[id]);
+        listContainer.appendChild(div);
+    });
+}
+
+// دالة تفعيل المحادثة المنفصلة للعميل المختار
+function selectActiveStaffChat(id, name) {
+    activeClientChatID = id;
+    const section = document.getElementById('activeChatSection');
+    const title = document.getElementById('activeChatTitle');
+    
+    if(section && title) {
+        title.innerHTML = `💬 محادثة منفصلة مع العميل: <span style="color:#fff;">${name} (ID: ${id})</span>`;
+        section.style.display = 'block';
+        renderChatBoxes();
+    }
+}
+
+function renderChatBoxes() {
+    const clientBox = document.getElementById('clientChatBox');
+    const adminBox = document.getElementById('adminChatBox');
+    const chatLog = JSON.parse(localStorage.getItem('kw_chat')) || [];
+    let currentClientID = localStorage.getItem('kw_my_id');
+
+    // 1. توليد شاشة تذاكر العميل نفسه (يرى رسائله هو وردود الموظفين الموجهة له)
+    if (clientBox) {
+        let clientHtml = "";
+        chatLog.forEach(msg => {
+            if(msg.chatRoomID === currentClientID) {
+                const isClient = msg.sender === 'client';
+                const badgeColor = isClient ? '#cda052' : '#00ff66';
+                const labelType = isClient ? '👤 العميل' : '🛠️ الموظف';
+                
+                clientHtml += `
+                    <div class="msg ${msg.sender}" style="margin-bottom: 8px; width: fit-content; max-width: 85%;">
+                        <div style="font-size: 11px; color: ${badgeColor}; font-weight: bold; margin-bottom: 4px; display: flex; gap: 8px;">
+                            <span>${labelType}: ${msg.name}</span>
+                            <span>(ID: ${msg.id})</span>
+                        </div>
+                        <div style="word-break: break-word;">${msg.text}</div>
+                        <div style="font-size: 10px; color: #888; text-align: left; margin-top: 4px;">${msg.time}</div>
+                    </div>
+                `;
+            }
+        });
+        clientBox.innerHTML = clientHtml;
+        clientBox.scrollTop = clientBox.scrollHeight;
+    }
+
+    // 2. توليد شاشة الموظف المنفصلة (تظهر فقط رسائل العميل النشط المحدد حالياً)
+    if (adminBox && activeClientChatID) {
+        let adminHtml = "";
+        chatLog.forEach(msg => {
+            if(msg.chatRoomID === activeClientChatID) {
+                const isClient = msg.sender === 'client';
+                const badgeColor = isClient ? '#cda052' : '#00ff66';
+                const labelType = isClient ? '👤 العميل' : '🛠️ الموظف';
+
+                adminHtml += `
+                    <div class="msg ${msg.sender}" style="margin-bottom: 8px; width: fit-content; max-width: 85%;">
+                        <div style="font-size: 11px; color: ${badgeColor}; font-weight: bold; margin-bottom: 4px; display: flex; gap: 8px;">
+                            <span>${labelType}: ${msg.name}</span>
+                            <span>(ID: ${msg.id})</span>
+                        </div>
+                        <div style="word-break: break-word;">${msg.text}</div>
+                        <div style="font-size: 10px; color: #888; text-align: left; margin-top: 4px;">${msg.time}</div>
+                    </div>
+                `;
+            }
+        });
+        adminBox.innerHTML = adminHtml;
+        adminBox.scrollTop = adminBox.scrollHeight;
+    }
 }
