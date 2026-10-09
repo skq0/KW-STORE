@@ -3,7 +3,7 @@ var activeRoom = null;
 function get(k, def) {
     var val = localStorage.getItem(k);
     if (!val) return def;
-    return JSON.parse(val);
+    try { return JSON.parse(val); } catch(e) { return def; }
 }
 
 function set(k, v) {
@@ -83,6 +83,10 @@ document.addEventListener("keydown", function(event) {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
+    if (!localStorage.getItem("kw_cleared_v4")) {
+        localStorage.clear();
+        localStorage.setItem("kw_cleared_v4", "true");
+    }
     initIdentity();
     if (!localStorage.getItem("kw_roles_v3")) {
         set("kw_roles_v3", [
@@ -91,11 +95,9 @@ document.addEventListener("DOMContentLoaded", function() {
             { id: 3, name: "دعم فني مستوى 1", permissions: { viewComplaints: true, reply: false, editPrices: false, manageEmployees: false, viewTickets: true, replyTickets: true, fireAssign: false, editSite: false } }
         ]);
     }
-    
     if (!localStorage.getItem("kw_employees")) { 
         set("kw_employees", [{ id: "100", name: "يوسف (المطور المسؤول)", role: "مدير العام" }]); 
     }
-    
     if (!localStorage.getItem("kw_chat_rooms")) { set("kw_chat_rooms", {}); }
     checkSecurityAccess();
     renderAll();
