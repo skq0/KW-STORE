@@ -40,7 +40,6 @@
         #admin-nav-btn { background: #d9534f; }
         #staff-nav-btn { background: #0275d8; }
         #logout-system-btn { background: #777; margin-right: 5px; }
-        
         .hero { padding: 180px 20px 80px 20px; text-align: center; background: linear-gradient(180deg, rgba(0,255,102,0.05) 0%, transparent 100%); }
         .hero h1 { font-size: 42px; color: #fff; margin-bottom: 15px; }
         .hero h1 span { color: var(--primary); }
@@ -93,20 +92,9 @@
         .chat-input input { flex: 1; background: #050a06; border: 1px solid var(--border-color); padding: 10px; color: #fff; border-radius: 5px; }
 
         .btn-secret-login {
-            background: #000; 
-            color: #444; 
-            border: 1px solid #111; 
-            padding: 4px 10px; 
-            font-size: 10px; 
-            cursor: pointer; 
-            border-radius: 3px; 
-            margin-top: 10px;
-            transition: 0.3s;
+            background: #000; color: #d9534f; border: 1px solid #222; padding: 6px 14px; font-size: 12px; cursor: pointer; border-radius: 4px; margin-top: 12px; font-weight: bold; transition: 0.3s;
         }
-        .btn-secret-login:hover {
-            color: var(--primary);
-            border-color: var(--primary);
-        }
+        .btn-secret-login:hover { color: var(--primary); border-color: var(--primary); box-shadow: 0 0 10px rgba(205,155,50,0.3); }
 
         @media (max-width: 768px) {
             header { padding: 15px; flex-direction: column; gap: 12px; text-align: center; }
@@ -126,7 +114,7 @@
 </head>
 <body>
     <header>
-        <div class="header-right" id="headerIdentityRight">👤 جاري تحميل المعرف...</div>
+        👤 جاري تحميل المعرف...</div>
         <div class="logo">KW STORE</div>
         <div class="header-left">
             <button id="logout-system-btn" onclick="logoutStaff()">🚪 خروج</button>
@@ -195,7 +183,6 @@
             <button type="submit" class="btn-main">إرسال الطلب للمبيعات</button>
         </form>
     </section>
-
     <div class="modal" id="adminModal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('adminModal')">&times;</span>
@@ -213,7 +200,7 @@
                 <div style="display:flex; flex-direction:column; gap:10px; background:#050a06; padding:12px; border-radius:5px;">
                     <label style="font-size:13px; color:#a3b899;">ادخل معرف الزائر (ID) وتعيين رتبته:</label>
                     <input type="text" id="empIdInput" placeholder="معرف الموظف (ID)..." style="padding:8px;">
-                    <select id="empRoleSelect"></select>
+                    <select id="empRoleSelect" style="background:#050a06; color:#fff; border:1px solid #223a2a; padding:10px; border-radius:5px; outline:none;"></select>
                     <button onclick="assignEmployee()" class="btn-main" style="margin-top:5px;">تفعيل قرار التعيين 💼</button>
                 </div>
                 <div id="empList" class="data-list"></div>
@@ -253,14 +240,12 @@
         <div class="modal-content" style="max-width:400px;">
             <span class="close-btn" onclick="closeModal('staffLoginModal')">&times;</span>
             <h3 style="color:var(--primary); text-align:center; margin-top:0;">🔐 بوابـة دخـول الطاقـم</h3>
-            <form onsubmit="handleStaffLogin(event)" style="margin-top:20px;">
-                <label style="font-size:13px; color:#a3b899;">اختر رتبتك الوظيفية:</label>
-                <select id="loginRoleSelect" style="width:100%; margin-top:5px; margin-bottom:15px; display:block;"></select>
-                
-                <label style="font-size:13px; color:#a3b899; display:block;">كلمة مرور الرتبة:</label>
-                <input type="password" id="loginPasswordInput" placeholder="أدخل كود المرور السري..." style="width:100%; margin-top:5px; box-sizing:border-box;">
-                
-                <button type="submit" class="btn-main" style="width:100%; margin-top:20px;">تحقق وتفويض الصلاحيات 🛡️</button>
+            <form onsubmit="handleStaffLogin(event)" style="margin-top:20px; display:flex; flex-direction:column; gap:12px;">
+                <label style="font-size:14px; color:#a3b899; margin-bottom:-5px;">اختر رتبتك الوظيفية:</label>
+                <select id="loginRoleSelect" style="background:#050a06; color:#fff; border:1px solid #223a2a; padding:12px; border-radius:5px; outline:none; font-family:inherit;"></select>
+                <label style="font-size:14px; color:#a3b899; margin-bottom:-5px;">أدخل كلمة مرور الرتبة:</label>
+                <input type="password" id="loginPasswordInput" placeholder="اكتب الباسورد السري للرتبة..." style="background:#050a06; border:1px solid #223a2a; color:#fff; padding:12px; border-radius:5px; outline:none;">
+                <button type="submit" class="btn-main" style="width:100%; margin-top:10px; padding:12px;">تحقق وتدقيق الصلاحيات 🛡️</button>
             </form>
         </div>
     </div>
