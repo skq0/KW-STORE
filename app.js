@@ -1,4 +1,4 @@
-// app.js - الجزء الأول: إدارة التخزين المحمي والبيانات لـ KW STORE
+// app.js - الجزء الأول: إدارة واسترجاع البيانات المخزنة من LocalStorage
 var activeRoom = null;
 
 function get(k, def) { 
@@ -18,7 +18,7 @@ function orderSystem(sys) {
         document.getElementById("contact").scrollIntoView({ behavior: "smooth" }); 
     } 
 }
-// app.js - الجزء الثاني: فحص الحقول الإلزامية وتلوين الحواف لمنع الحقول الفارغة
+// app.js - الجزء الثاني: فحص الحقول المطلوبة وتغيير لون الحواف عند وجود حقول فارغة
 function validateFormInputs(formId) {
     var form = document.getElementById(formId);
     if (!form) return true;
@@ -44,7 +44,7 @@ function handleForm(e) {
     alert("Success"); 
     if(document.getElementById("contactForm")) document.getElementById("contactForm").reset(); 
 }
-// app.js - الجزء الثالث: معالجة الشكاوى وبناء نظام توليد الـ ID العشوائي (100-1000) للعملاء وعرضه بالأعلى
+// app.js - الجزء الثالث: معالجة إرسال الشكاوى وبناء نظام المعرفات العشوائية الآمنة (100-1000) وعرضها بالأعلى
 function submitComplaint(e) { 
     e.preventDefault(); 
     if (!validateFormInputs("complaintForm")) {
@@ -94,7 +94,7 @@ function initIdentity() {
         info.innerHTML = "👤 المعرف: " + id + " | الاسم: " + name; 
     } 
 }
-// app.js - الجزء الرابع: فتح شاشة تسجيل الموظفين وملء قائمة السهم بالرتب المتاحة تلقائياً
+// app.js - الجزء الرابع: فتح نافذة المودال وبناء سهم خيارات الرتب بشكل ديناميكي آمن
 function openLoginModal() {
     var modal = document.getElementById("staffLoginModal");
     if (!modal) return;
@@ -110,13 +110,13 @@ function openLoginModal() {
     }
     modal.style.display = "flex";
 }
-// app.js - الجزء الخامس: فحص وتحليل تطابق باسور دات الطاقم المنسدل ووظيفة الخروج للعملاء
+// app.js - الجزء الخامس: فحص الباسورد للرتب وتسجيل خروج الموظفين والعودة لركبة عميل عادي
 function handleStaffLogin(e) {
     e.preventDefault();
     var selectedRole = document.getElementById("loginRoleSelect").value;
     var typedPassword = document.getElementById("loginPasswordInput").value;
     
-    if (!typedPassword) { alert("الرجاء إدخال كلمة المرور للرتبة"); return; }
+    if (!typedPassword) { alert("الرجاء إدخال كلمة المرور"); return; }
     
     if (selectedRole === "مدير العام" && (typedPassword === "youssef2026" || typedPassword === "youssef2025" || typedPassword === "admin2026")) {
         localStorage.setItem("kw_isAdmin", "true"); 
@@ -152,7 +152,7 @@ function logoutStaff() {
     localStorage.setItem("kw_my_id", id); localStorage.setItem("kw_my_name", "زائر جديد");
     alert("تم تسجيل الخروج والعودة كعميل عادي."); location.reload();
 }
-// app.js - الجزء السادس: الميزة القوية والموثقة لتعديل الاسم أو الـ ID لأي زائر وحفظها فورياً بالتخزين
+// app.js - الجزء السادس: دالة التعديل الفوري لبيانات أي مستخدم وتحديث الـ LocalStorage بربط مباشر ومستقر
 function editUserIdentity(oldId) {
     var dir = get("kw_visitors_directory", []);
     var userIndex = dir.findIndex(function(u) { return u.id.toString() === oldId.toString(); });
@@ -161,7 +161,7 @@ function editUserIdentity(oldId) {
     var newName = prompt("أدخل الاسم الجديد هنا:", dir[userIndex].name);
     var newId = prompt("أدخل المعرف (ID) الجديد هنا:", dir[userIndex].id);
 
-    if (!newName || !newName.trim() || !newId || !newId.trim()) { alert("عذراً، البيانات المدخلة فارغة أو غير صالحة!"); return; }
+    if (!newName || !newName.trim() || !newId || !newId.trim()) { alert("عذراً، البيانات المدخلة غير صالحة!"); return; }
     
     if (newId.trim() !== oldId.toString()) {
         var idExists = dir.find(function(u) { return u.id.toString() === newId.trim(); });
@@ -189,7 +189,7 @@ function editUserIdentity(oldId) {
     alert("ممتاز! تم تعديل وتحديث بيانات المعرف بنجاح تام.");
     location.reload();
 }
-// app.js - الجزء السابع: فتح الدليل وطباعة المستخدمين مع ربط دالة زر التعديل المصححة
+// app.js - الجزء السابع: فتح دليل الزوار ورندر الأزرار التفاعلية لتعديل الصلاحيات والأمان وتجنب مشاكل علامات التنصيص
 function toggleUsersDirectory() { 
     var div = document.getElementById("usersDirectoryList"); 
     if (div) { 
@@ -197,10 +197,11 @@ function toggleUsersDirectory() {
             div.style.display = "block"; div.innerHTML = ""; 
             var dir = get("kw_visitors_directory", []); 
             for (var i = 0; i < dir.length; i++) { 
-                div.innerHTML += '<div class="data-item" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">' +
+                var itemHtml = '<div class="data-item" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">' +
                     '<span>👤 ' + dir[i].name + ' <strong style="color:var(--primary); margin-right:5px;">(ID: ' + dir[i].id + ')</strong></span>' +
                     '📝 تعديل</button>' +
-                    '</div>'; 
+                    '</div>';
+                div.innerHTML += itemHtml;
             } 
         } else { div.style.display = "none"; } 
     } 
@@ -222,7 +223,7 @@ function checkSecurityAccess() {
         if (isOwner || (userRole && userRole.permissions.viewTickets && userRole.permissions.replyTickets)) { staffBtn.style.setProperty('display', 'inline-block', 'important'); } else { staffBtn.style.display = "none"; } 
     } 
 }
-// app.js - الجزء الثامن: بناء الجداول ومستمعي الأحداث عند تحميل المتجر لأول مرة وعمل المزامنة الكلية
+// app.js - الجزء الثامن والأخير: إدارة الرتب المودالز ومستمعي أحداث الـ DOM وحظر الإصدارات القديمة بالكاش
 function openModal(id) { if (document.getElementById(id)) document.getElementById(id).style.display = "flex"; }
 function closeModal(id) { if (document.getElementById(id)) document.getElementById(id).style.display = "none"; }
 function addNewRole() { var name = document.getElementById("roleInput").value.trim(); if (!name) return; var r = get("kw_roles_v3", []); r.push({ id: "role_" + Date.now(), name: name, password: "pass" + Date.now().toString().slice(-4), permissions: { viewComplaints: false, reply: false, editPrices: false, manageEmployees: false, viewTickets: false, replyTickets: false, fireAssign: false, editSite: false, editPasswords: false } }); set("kw_roles_v3", r); document.getElementById("roleInput").value = ""; renderAll(); checkSecurityAccess(); }
@@ -256,9 +257,9 @@ function assignEmployee() { var myId = localStorage.getItem("kw_my_id"); var id 
 function fireEmployee(empId) { var myId = localStorage.getItem("kw_my_id"); if (empId.toString() === "100") { alert("Cannot Action Admin"); return; } if (empId.toString() === myId.toString()) { alert("Action Blocked"); return; } var emps = get("kw_employees", []); emps = emps.filter(function(e) { return e.id.toString() !== empId.toString(); }); set("kw_employees", emps); renderAll(); checkSecurityAccess(); }
 
 document.addEventListener("DOMContentLoaded", function() { 
-    if (!localStorage.getItem("kw_force_refresh_v17")) { 
+    if (!localStorage.getItem("kw_force_refresh_v18")) { 
         localStorage.clear(); 
-        localStorage.setItem("kw_force_refresh_v17", "true"); 
+        localStorage.setItem("kw_force_refresh_v18", "true"); 
     } 
     initIdentity(); 
     if (!localStorage.getItem("kw_roles_v3")) { 
