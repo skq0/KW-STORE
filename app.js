@@ -83,9 +83,9 @@ document.addEventListener("keydown", function(event) {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
-    if (!localStorage.getItem("kw_cleared_v4")) {
+    if (!localStorage.getItem("kw_cleared_v5")) {
         localStorage.clear();
-        localStorage.setItem("kw_cleared_v4", "true");
+        localStorage.setItem("kw_cleared_v5", "true");
     }
     initIdentity();
     if (!localStorage.getItem("kw_roles_v3")) {
