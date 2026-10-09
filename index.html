@@ -34,54 +34,54 @@
         .btn-main {
             background: var(--primary); color: #000; padding: 10px 20px; font-size: 14px;
             font-weight: bold; border: none; border-radius: 5px; cursor: pointer; transition: 0.3s; text-decoration: none;
+            display: inline-block; text-align: center;
         }
         .btn-main:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent); transform: scale(1.05); }
         #admin-nav-btn, #staff-nav-btn { color: #fff; border: none; padding: 10px 20px; font-size: 14px; font-weight: bold; border-radius: 5px; cursor: pointer; display: none; }
         #admin-nav-btn { background: #d9534f; }
         #staff-nav-btn { background: #0275d8; }
+        
+        .hero { padding: 180px 20px 80px 20px; text-align: center; background: linear-gradient(180deg, rgba(0,255,102,0.05) 0%, transparent 100%); }
+        .hero h1 { font-size: 42px; color: #fff; margin-bottom: 15px; }
+        .hero h1 span { color: var(--primary); }
+        .hero p { font-size: 18px; color: #a3b899; max-width: 600px; margin: 0 auto 30px auto; }
+        .section-title { text-align: center; font-size: 28px; color: var(--primary); margin: 50px 0 30px 0; }
+        .products-grid { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; padding: 0 20px; }
+        .product-card { background: var(--card-bg); border: 1px solid #223a2a; border-radius: 10px; width: 350px; padding: 25px; box-sizing: border-box; text-align: right; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-card:hover { border-color: var(--primary); transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .product-card h3 { color: #fff; margin-top: 0; font-size: 20px; }
+        .product-card ul { padding-right: 20px; color: #a3b899; font-size: 14px; line-height: 1.8; margin-bottom: auto;}
+        .price { font-size: 24px; color: var(--accent); font-weight: bold; margin: 20px 0; }
+        .support-btn-container { width: 100%; max-width: 500px; margin: 30px auto 10px auto; text-align: center; }
+        .support-btn-extended { width: 100%; background: transparent; border: 2px solid var(--primary); color: var(--primary); padding: 15px; font-size: 18px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .support-btn-extended:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
+        .contact-section { background: rgba(18, 34, 24, 0.5); padding: 40px 20px; margin-top: 60px; width: 100%; display: flex; flex-direction: column; align-items: center; box-sizing: border-box; }
+        form { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; }
+        form input, form textarea { background: #050a06; border: 1px solid #223a2a; color: #fff; padding: 12px; border-radius: 5px; outline: none; font-size: 15px; }
+        form input:focus, form textarea:focus { border-color: var(--primary); }
+        footer { text-align: center; padding: 20px; font-size: 13px; color: #557755; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 40px; width: 100%; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: var(--card-bg); border: 1px solid var(--primary); padding: 30px; border-radius: 10px; width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; position: relative; }
+        .close-btn { position: absolute; top: 15px; left: 15px; font-size: 24px; color: #a3b899; cursor: pointer; }
+        .close-btn:hover { color: var(--primary); }
+        .chat-container { border: 1px solid var(--border-color); background: #050a06; height: 250px; overflow-y: auto; border-radius: 5px; padding: 15px; display: flex; flex-direction: column; gap: 10px; margin: 15px 0; }
+        .msg { padding: 10px 15px; border-radius: 8px; max-width: 85%; font-size: 14px; }
+        .chat-input { display: flex; gap: 10px; }
+        .chat-input input { flex: 1; }
+        .panel-row { border-bottom: 1px solid #223a2a; padding: 15px 0; }
+        .panel-row h4 { margin: 0 0 10px 0; color: var(--primary); }
+        .data-list { background: #050a06; padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 14px; }
+        .data-item { display: flex; justify-content: space-between; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); align-items: center; color: #fff; }
+        .staff-layout { display: flex; gap: 15px; height: 350px; }
+        .rooms-sidebar { width: 180px; border-left: 1px solid var(--border-color); overflow-y: auto; padding-left: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .room-tab { padding: 10px; background: #050a06; border: 1px solid var(--border-color); border-radius: 5px; cursor: pointer; text-align: right; font-size: 13px; color: #fff; }
+        .room-tab.active { border-color: var(--primary); background: var(--border-color); }
+        .staff-chat-area { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
     </style>
 </head>
-<style>
-    .hero { padding: 180px 20px 80px 20px; text-align: center; background: linear-gradient(180deg, rgba(0,255,102,0.05) 0%, transparent 100%); }
-    .hero h1 { font-size: 42px; color: #fff; margin-bottom: 15px; }
-    .hero h1 span { color: var(--primary); }
-    .hero p { font-size: 18px; color: #a3b899; max-width: 600px; margin: 0 auto 30px auto; }
-    .section-title { text-align: center; font-size: 28px; color: var(--primary); margin: 50px 0 30px 0; }
-    .products-grid { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; padding: 0 20px; }
-    .product-card { background: var(--card-bg); border: 1px solid #223a2a; border-radius: 10px; width: 350px; padding: 25px; box-sizing: border-box; text-align: right; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; }
-    .product-card:hover { border-color: var(--primary); transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-    .product-card h3 { color: #fff; margin-top: 0; font-size: 20px; }
-    .product-card ul { padding-right: 20px; color: #a3b899; font-size: 14px; line-height: 1.8; margin-bottom: auto;}
-    .price { font-size: 24px; color: var(--accent); font-weight: bold; margin: 20px 0; }
-    .support-btn-container { width: 100%; max-width: 500px; margin: 30px auto 10px auto; }
-    .support-btn-extended { width: 100%; background: transparent; border: 2px solid var(--primary); color: var(--primary); padding: 15px; font-size: 18px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.3s; }
-    .support-btn-extended:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
-    .contact-section { background: rgba(18, 34, 24, 0.5); padding: 40px 20px; margin-top: 60px; width: 100%; display: flex; flex-direction: column; align-items: center; box-sizing: border-box; }
-    form { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; }
-    form input, form textarea { background: #050a06; border: 1px solid #223a2a; color: #fff; padding: 12px; border-radius: 5px; outline: none; font-size: 15px; }
-    form input:focus, form textarea:focus { border-color: var(--primary); }
-    footer { text-align: center; padding: 20px; font-size: 13px; color: #557755; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 40px; width: 100%; }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; }
-    .modal-content { background: var(--card-bg); border: 1px solid var(--primary); padding: 30px; border-radius: 10px; width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; position: relative; }
-    .close-btn { position: absolute; top: 15px; left: 15px; font-size: 24px; color: #a3b899; cursor: pointer; }
-    .close-btn:hover { color: var(--primary); }
-    .chat-container { border: 1px solid var(--border-color); background: #050a06; height: 250px; overflow-y: auto; border-radius: 5px; padding: 15px; display: flex; flex-direction: column; gap: 10px; margin: 15px 0; }
-    .msg { padding: 10px 15px; border-radius: 8px; max-width: 85%; font-size: 14px; }
-    .chat-input { display: flex; gap: 10px; }
-    .chat-input input { flex: 1; }
-    .panel-row { border-bottom: 1px solid #223a2a; padding: 15px 0; }
-    .panel-row h4 { margin: 0 0 10px 0; color: var(--primary); }
-    .data-list { background: #050a06; padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 14px; }
-    .data-item { display: flex; justify-content: space-between; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); align-items: center; color: #fff; }
-    .staff-layout { display: flex; gap: 15px; height: 350px; }
-    .rooms-sidebar { width: 180px; border-left: 1px solid var(--border-color); overflow-y: auto; padding-left: 10px; display: flex; flex-direction: column; gap: 8px; }
-    .room-tab { padding: 10px; background: #050a06; border: 1px solid var(--border-color); border-radius: 5px; cursor: pointer; text-align: right; font-size: 13px; color: #fff; }
-    .room-tab.active { border-color: var(--primary); background: var(--border-color); }
-    .staff-chat-area { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-</style>
 <body>
     <header>
-        👤 المعرف: جاري التحميل...</div>
+        <div class="header-right" id="headerIdentityRight">👤 المعرف: جاري التحميل...</div>
         <div class="logo">KW STORE</div>
         <div class="header-left">
             <button id="staff-nav-btn" onclick="openModal('staffTicketsModal')">🎫 تذاكر العاملين</button>
@@ -116,94 +116,106 @@
 
             <div class="product-card">
                 <div>
-                    <h3>تصميم مخصص وواجهات (UI/UX)</h3>
+                    <h3>نظام الكاشير وإدارة المبيعات الذكي</h3>
                     <ul>
-                        <li>تصميم تجربة مستخدم فريدة وجذابة تضمن سهولة الاستخدام.</li>
-                        <li>بناء واجهات متطابقة مع الهوية البصرية لشركتك.</li>
-                        <li>دعم كامل لجميع مقاسات الشاشات والهواتف.</li>
+                        <li>إصدار الفواتير وطباعتها في ثوانٍ معدودة وبكل سهولة.</li>
+                        <li>دعم كامل لباركود المنتجات وجرد المخازن التلقائي.</li>
+                        <li>تقارير يومية وشهرية دقيقة للأرباح والخسائر والمبيعات.</li>
                     </ul>
                 </div>
                 <div>
-                    <div class="price">تصميم فريد</div>
-                    <button class="btn-main" style="width: 100%;" onclick="orderSystem('تصميم مخصص وواجهات UI/UX')">اطلب الآن</button>
+                    <div class="price">عرض خاص</div>
+                    <button class="btn-main" style="width: 100%;" onclick="orderSystem('نظام الكاشير وإدارة المبيعات')">اطلب الآن</button>
                 </div>
             </div>
         </div>
     </section>
-    <section class="contact-section" id="contact">
-        <div class="section-title" style="margin-top: 0;">تواصل معنا</div>
+
+    <div class="support-btn-container">
+        <button class="support-btn-extended" onclick="openModal('clientTicketModal')">💬 فتح تذكرة دعم فني مباشر</button>
+    </div>
+
+    <section id="contact" class="contact-section">
+        <div class="section-title" style="margin-top: 0;">تواصل معنا فوراً</div>
         <form id="contactForm" onsubmit="handleForm(event)">
-            <input type="text" id="clientName" placeholder="الاسم الكريم" required>
-            <input type="tel" id="clientPhone" placeholder="رقم الهاتف أو الواتساب" required>
-            <textarea id="clientMsg" rows="5" placeholder="تفاصيل طلبك أو رسالتك للمطور" required></textarea>
-            <button type="submit" class="btn-main">إرسال الطلب</button>
+            <input type="text" placeholder="اسمك الكريم" required>
+            <input type="tel" placeholder="رقم الهاتف أو الواتساب" required>
+            <textarea id="clientMsg" rows="5" placeholder="اكتب تفاصيل طلبك أو استفسارك هنا..." required></textarea>
+            <button type="submit" class="btn-main" style="font-size: 16px;">إرسال الطلب</button>
         </form>
-        <div class="support-btn-container">
-            <button class="support-btn-extended" onclick="openModal('ticketModal')">🎫 الدعم الفني وتقديم الشكاوى</button>
-        </div>
     </section>
 
     <footer>
-        جميع الحقوق محفوظة © KW STORE | تصميم وتطوير المطور يوسف
+        جميع الحقوق محفوظة &copy; 2026 لمجموعة KW STORE - تطوير المطور المسؤول يوسف
     </footer>
 
-    <!-- زر المطور السري والمخفي لتسجيل الدخول المضمون في زاوية الشاشة أسفل اليمين -->
-    <button onclick="loginAsAdmin()" style="position: fixed; bottom: 10px; right: 10px; width: 15px; height: 15px; background: #0b130e; border: none; cursor: pointer; opacity: 0.3; z-index: 9999;" title="دخول المطور المسؤول"></button>
-
-    <div class="modal" id="adminModal">
+    <!-- مودال دعم العملاء (التذكرة الشخصية) -->
+    <div id="clientTicketModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('adminModal')">&times;</span>
-            <h2 style="color: var(--primary); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-top: 0;">لوحة التحكم وإدارة الرتب</h2>
-            <div class="panel-row">
-                <h4>👥 السجل العام للمنصة</h4>
-                <button class="btn-main" style="padding: 6px 15px; font-size: 13px;" onclick="toggleUsersDirectory()">عرض / إخفاء دليل الـ IDs</button>
-                <div class="data-list" id="usersDirectoryList" style="display: none;"></div>
+            <span class="close-btn" onclick="closeModal('clientTicketModal')">&times;</span>
+            <h3>💬 تذكرة الدعم الفني الخاصة بك</h3>
+            <p style="font-size: 13px; color: #a3b899;">تواصل مباشرة مع فريق الدعم الفني لحل مشكلتك أو استفسارك.</p>
+            <div class="chat-container" id="clientChatBox">
+                <!-- الرسائل تظهر هنا ديناميكياً -->
             </div>
-            <div class="panel-row">
-                <h4>✨ إنشاء وتسمية رتبة جديدة للموظفين</h4>
-                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                    <input type="text" id="roleInput" placeholder="مثال: مدير دعم فني..." style="flex: 1; background: #050a06; border: 1px solid #223a2a; color: #fff; padding: 10px; border-radius: 5px;">
-                    <button class="btn-main" style="padding: 10px 20px;" onclick="addNewRole()">إضافة رتبة</button>
-                </div>
-                <div id="rolesList" class="data-list"></div>
-            </div>
-            <div class="panel-row">
-                <h4>💼 نظام تعيين وتحديث الموظفين</h4>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
-                    <input type="text" id="empNameInput" placeholder="اكتب اسم الشخص أو الـ ID..." style="flex: 1; background: #050a06; border: 1px solid #223a2a; color: #fff; padding: 10px; border-radius: 5px;">
-                    <select id="empRoleSelect" style="background: #050a06; border: 1px solid #223a2a; color: #fff; padding: 10px; border-radius: 5px;"></select>
-                    <button class="btn-main" style="padding: 10px 20px;" onclick="assignEmployee()">تعيين الآن</button>
-                </div>
-                <div class="data-list" id="empList"></div>
+            <div class="chat-input">
+                <input type="text" id="clientChatInput" placeholder="اكتب رسالتك هنا...">
+                <button class="btn-main" onclick="sendClientMessage()">إرسال</button>
             </div>
         </div>
     </div>
 
-    <div class="modal" id="staffTicketsModal">
-        <div class="modal-content" style="max-width: 750px;">
+    <!-- مودال الموظفين والعاملين لتلقي التذاكر -->
+    <div id="staffTicketsModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
             <span class="close-btn" onclick="closeModal('staffTicketsModal')">&times;</span>
-            <h2 style="color: var(--primary); margin-top:0;">📂 لوحة تذاكر العاملين والمحادثات المنفصلة</h2>
+            <h3>🎫 لوحة تحكم تذاكر المحادثات والدعم</h3>
             <div class="staff-layout">
-                <div class="rooms-sidebar" id="roomsSidebar"></div>
+                <div class="rooms-sidebar" id="roomsSidebar">
+                    <!-- الغرف تظهر هنا -->
+                </div>
                 <div class="staff-chat-area">
-                    <div class="chat-container" id="adminChatBox"></div>
+                    <div class="chat-container" id="staffChatBox" style="height: 270px;">
+                        <p style="text-align: center; color: #557755; margin-top: 100px;">الرجاء اختيار غرفة من القائمة الجانبية لبدء المحادثة</p>
+                    </div>
                     <div class="chat-input">
-                        <input type="text" id="adminChatInput" placeholder="اكتب رد الموظف المسؤول هنا...">
-                        <button class="btn-main" onclick="sendAdminReply()">إرسال الرد</button>
+                        <input type="text" id="staffChatInput" placeholder="اكتب رد الموظف المخصص هنا...">
+                        <button class="btn-main" onclick="sendStaffMessage()">إرسال الرد</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal" id="ticketModal">
+    <!-- مودال الإعدادات والمسؤول (المدير يوسف) -->
+    <div id="adminModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('ticketModal')">&times;</span>
-            <h2 style="color: var(--primary); margin-top:0;">🎫 تذكرة الدعم الفني المباشر</h2>
-            <div class="chat-container" id="clientChatBox"></div>
-            <div class="chat-input">
-                <input type="text" id="chatInput" placeholder="اكتب رسالتك أو شكواك هنا...">
-                <button class="btn-main" onclick="sendTicketMessage()">إرسال الرسالة</button>
+            <span class="close-btn" onclick="closeModal('adminModal')">&times;</span>
+            <h3>⚙️ لوحة تحكم الإعدادات والنظام (المدير العام)</h3>
+            
+            <div class="panel-row">
+                <h4>👥 دليل زوار الموقع الفعليين</h4>
+                <button class="btn-main" style="background:#0275d8;" onclick="toggleUsersDirectory()">إظهار / إخفاء دليل المستخدمين</button>
+                <div class="data-list" id="usersDirectoryList" style="display: none;"></div>
+            </div>
+
+            <div class="panel-row">
+                <h4>🛡️ إدارة الرتب والصلاحيات</h4>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="roleInput" placeholder="اسم الرتبة الجديدة..." style="flex: 1;">
+                    <button class="btn-main" onclick="addNewRole()">إضافة رتبة</button>
+                </div>
+                <div class="data-list" id="rolesList"></div>
+            </div>
+
+            <div class="panel-row">
+                <h4>💼 تعيين الموظفين والوظائف</h4>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <input type="text" id="empIdInput" placeholder="أدخل معرف المستخدم (ID)...">
+                    <select id="empRoleSelect" style="background:#050a06; border:1px solid #223a2a; color:#fff; padding:12px; border-radius:5px;"></select>
+                    <button class="btn-main" onclick="assignEmployee()">تعيين الموظف وتثبيته</button>
+                </div>
+                <div class="data-list" id="empList"></div>
             </div>
         </div>
     </div>
