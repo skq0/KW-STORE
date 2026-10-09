@@ -3,248 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KW STORE</title>
+    <title>KW STORE | إدارة الأعمال الذكية</title>
     <style>
         :root {
-            --bg-color: #0b130e;
-            --card-bg: #122218;
-            --primary: #cd9b32;
-            --accent: #00ff66;
-            --text: #e2e8f0;
-            --border-color: #223a2a;
+            --bg-dark: #060b07;
+            --surface: #0b130e;
+            --primary: #2ecc71;
+            --primary-hover: #27ae60;
+            --text: #ffffff;
+            --text-muted: #88aa88;
+            --border-color: rgba(46, 204, 113, 0.2);
         }
-        body {
-            background-color: var(--bg-color); color: var(--text);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0; padding: 0; scroll-behavior: smooth;
-        }
-        header {
-            background: rgba(11, 19, 14, 0.95); border-bottom: 1px solid rgba(205, 155, 50, 0.2);
-            position: fixed; width: 100%; top: 0; z-index: 1000;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 50px; box-sizing: border-box; min-height: 80px;
-        }
-        .logo {
-            color: var(--primary); font-size: 32px; font-weight: bold;
-            text-shadow: 0 0 15px rgba(205, 155, 50, 0.6); letter-spacing: 2px;
-        }
-        /* تثبيت وتأمين مكان ظهور الاسم والمعرف في الأعلى على اليمين */
-        .header-right { display: flex; align-items: center; gap: 15px; color: var(--primary); font-weight: bold; z-index: 1005; }
-        .header-left { display: flex; align-items: center; gap: 15px; z-index: 1005; }
-        
-        .btn-main {
-            background: var(--primary); color: #000; padding: 10px 20px; font-size: 14px;
-            font-weight: bold; border: none; border-radius: 5px; cursor: pointer; transition: 0.3s; text-decoration: none;
-        }
-        .btn-main:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent); transform: scale(1.05); }
-        
-        #admin-nav-btn, #staff-nav-btn, #logout-system-btn { color: #fff; border: none; padding: 10px 20px; font-size: 14px; font-weight: bold; border-radius: 5px; cursor: pointer; display: none; }
-        #admin-nav-btn { background: #d9534f; }
-        #staff-nav-btn { background: #0275d8; }
-        #logout-system-btn { background: #777; margin-right: 5px; }
-        .hero { padding: 180px 20px 80px 20px; text-align: center; background: linear-gradient(180deg, rgba(0,255,102,0.05) 0%, transparent 100%); }
-        .hero h1 { font-size: 42px; color: #fff; margin-bottom: 15px; }
-        .hero h1 span { color: var(--primary); }
-        .hero p { font-size: 18px; color: #a3b899; max-width: 600px; margin: 0 auto 30px auto; }
-        
-        .section-title { text-align: center; font-size: 28px; color: var(--primary); margin: 50px 0 30px 0; }
-        .products-grid { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; padding: 0 20px; }
-        
-        .product-card { 
-            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; width: 350px; padding: 25px; box-sizing: border-box; text-align: right; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; gap: 20px;
-        }
-        .product-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .product-card h3 { color: #fff; margin: 0 0 10px 0; font-size: 20px; }
-        .product-card ul { padding-right: 20px; color: #a3b899; font-size: 14px; line-height: 1.8; margin: 0; }
-        .price { font-size: 24px; color: var(--accent); font-weight: bold; margin: 10px 0; }
-        
-        .contact-section { background: rgba(18, 34, 24, 0.5); padding: 40px 20px; margin-top: 60px; width: 100%; display: flex; flex-direction: column; align-items: center; box-sizing: border-box; }
-        form { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; }
-        form input, form textarea, form select { background: #050a06; border: 1px solid #223a2a; color: #fff; padding: 12px; border-radius: 5px; outline: none; font-size: 15px; font-family: inherit; transition: border-color 0.3s; }
-        form input:focus, form textarea:focus, form select:focus { border-color: var(--primary); }
-        
-        footer { text-align: center; padding: 25px 20px; font-size: 13px; color: #557755; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 40px; width: 100%; background: #060c09; }
-        
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: var(--card-bg); border: 1px solid var(--primary); padding: 30px; border-radius: 10px; width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; position: relative; }
-        .close-btn { position: absolute; top: 15px; left: 15px; font-size: 24px; color: #a3b899; cursor: pointer; }
-        .close-btn:hover { color: var(--primary); }
-        .panel-row { border-bottom: 1px solid #223a2a; padding: 15px 0; }
-        .panel-row h4 { margin: 0 0 10px 0; color: var(--primary); }
-        .data-list { background: #050a06; padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 14px; }
-        .data-item { display: flex; justify-content: space-between; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); align-items: center; color: #fff; }
-        
-        .staff-layout { display: flex; gap: 15px; height: 400px; min-height: 350px; }
-        .rooms-sidebar { width: 180px; border-left: 1px solid var(--border-color); overflow-y: auto; padding-left: 10px; display: flex; flex-direction: column; gap: 8px; }
-        .staff-chat-area { flex: 1; display: flex; flex-direction: column; gap: 10px; }
-        .room-tab { padding: 10px; background: #050a06; border: 1px solid var(--border-color); border-radius: 5px; cursor: pointer; text-align: right; font-size: 13px; color: #fff; }
-        .room-tab.active { border-color: var(--primary); background: var(--border-color); }
-        .chat-input { display: flex; gap: 10px; }
-        .chat-input input { flex: 1; background: #050a06; border: 1px solid var(--border-color); padding: 10px; color: #fff; border-radius: 5px; }
-
-        .btn-secret-login {
-            background: #000; color: #d9534f; border: 1px solid #222; padding: 6px 14px; font-size: 12px; cursor: pointer; border-radius: 4px; margin-top: 12px; font-weight: bold; transition: 0.3s;
-        }
-        .btn-secret-login:hover { color: var(--primary); border-color: var(--primary); box-shadow: 0 0 10px rgba(205,155,50,0.3); }
-
-        @media (max-width: 768px) {
-            header { padding: 15px; flex-direction: column; gap: 12px; text-align: center; }
-            .logo { font-size: 26px; }
-            .header-left, .header-right { width: 100%; justify-content: center; flex-wrap: wrap; font-size: 13px; gap: 8px; }
-            .hero { padding: 140px 15px 40px 15px; }
-            .hero h1 { font-size: 28px; line-height: 1.4; }
-            .hero p { font-size: 15px; }
-            .products-grid { gap: 20px; padding: 0 10px; }
-            .product-card { width: 100%; padding: 20px; }
-            .modal-content { width: 95%; padding: 15px; font-size: 14px; }
-            .staff-layout { flex-direction: column; height: auto; }
-            .rooms-sidebar { width: 100%; border-left: none; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; flex-direction: row; overflow-x: auto; }
-            .room-tab { white-space: nowrap; }
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text); line-height: 1.6; padding-bottom: 60px; }
+        header { background-color: var(--surface); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); }
+        .logo { font-size: 24px; font-weight: bold; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 15px; align-items: center; }
+        .nav-btn { background: none; border: 1px solid var(--primary); color: var(--text); padding: 6px 12px; cursor: pointer; border-radius: 4px; display: none; font-size: 14px; }
+        .nav-btn:hover { background-color: var(--primary); color: #000; }
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .hero { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #0b130e 0%, #122218 100%); border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 30px; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 15px; }
+        .hero p { color: var(--text-muted); font-size: 1.2rem; max-width: 700px; margin: 0 auto 20px auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .card { background-color: var(--surface); padding: 25px; border-radius: 6px; border: 1px solid var(--border-color); position: relative; }
+        .card h3 { font-size: 1.5rem; margin-bottom: 10px; color: var(--primary); }
+        .card ul { list-style: none; margin: 15px 0; }
+        .card ul li { margin-bottom: 8px; color: #ccc; position: relative; padding-right: 15px; }
+        .card ul li::before { content: "•"; color: var(--primary); position: absolute; right: 0; }
+        .price { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; }
+        .btn { display: inline-block; width: 100%; background-color: var(--primary); color: #000; text-align: center; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; text-decoration: none; }
+        .btn:hover { background-color: var(--primary-hover); }
+        .form-section { background-color: var(--surface); padding: 25px; border-radius: 6px; border: 1px solid var(--border-color); max-width: 600px; margin: 0 auto 40px auto; }
+        .form-section h3 { margin-bottom: 15px; color: var(--primary); text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #ccc; }
+        .form-control { width: 100%; padding: 10px; background: #060b07; border: 1px solid var(--border-color); color: #fff; border-radius: 4px; }
+        .form-control:focus { outline: none; border-color: var(--primary); }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+        .modal-content { background: var(--surface); border: 2px solid var(--primary); padding: 25px; border-radius: 8px; width: 100%; max-width: 600px; position: relative; max-height: 90vh; overflow-y: auto; }
+        .close-btn { position: absolute; top: 10px; left: 10px; background: none; border: none; color: #d9534f; font-size: 24px; cursor: pointer; }
+        .data-item { background: #060b07; border: 1px solid var(--border-color); padding: 10px; margin-bottom: 10px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+        footer { background-color: var(--surface); text-align: center; padding: 15px; border-top: 1px solid var(--border-color); position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; }
     </style>
 </head>
 <body>
-    <!-- تم تصحيح وسم الـ Header بالكامل لضمان طباعة الـ ID والاسم في الأعلى يميناً بنسبة مليون في المائة -->
     <header>
+        <a href="#" class="logo">KW STORE</a>
         👤 جاري تحميل المعرف...</div>
-        <div class="logo">KW STORE</div>
-        <div class="header-left">
-            <button id="logout-system-btn" onclick="logoutStaff()">🚪 خروج</button>
-            <button id="staff-nav-btn" onclick="openModal('staffTicketsModal')">🎫 تذاكر العاملين</button>
-            <button id="admin-nav-btn" onclick="openModal('adminModal')">⚙️ إعدادات الصفحة</button>
-            <span id="headerRoleLeft" style="color: var(--accent); font-weight: bold; background: rgba(0,255,102,0.1); padding: 5px 10px; border-radius: 4px;">Client</span>
+        <div class="nav-links">
+            <span id="headerRoleLeft" style="color: var(--primary); font-weight: bold; font-size: 14px; margin-left: 10px;">Client</span>
+            <button id="staff-nav-btn" class="nav-btn" onclick="openModal('staffTicketsModal')">🎫 تذاكر العاملين</button>
+            <button id="admin-nav-btn" class="nav-btn" onclick="openModal('adminPanelModal')">⚙ إعدادات الصفحة</button>
+            <button id="logout-system-btn" class="nav-btn" onclick="logoutStaff()" style="border-color: #d9534f; color: #d9534f;">🚪 خروج</button>
         </div>
     </header>
 
-    <section class="hero" id="home">
-        <h1>إدارة أعمالك أصبحت <span>أسهل وأكثر أماناً</span></h1>
-        <p>نحن نصنع برمجيات مخصصة وحلول كاشير ذكية مصممة خصيصاً لمساعدة المطاعم والسوبر ماركت على تنظيم حساباتهم ومخازنهم بدقة متناهية.</p>
-        <a href="#contact" class="btn-main">اطلب نسختك التجريبية الآن</a>
-    </section>
+    <div class="container">
+        <div class="hero">
+            <h1>إدارة أعمالك أصبحت أسهل وأكثر أماناً</h1>
+            <p>نحن نصنع برمجيات مخصصة وحلول كاشير ذكية مصممة خصيصاً لمساعدة المطاعم والسوبر ماركت على تنظيم حساباتهم ومخازنهم بدقة متناهية.</p>
+            <button class="btn" style="max-width: 250px;" onclick="document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });">اطلب نسختك التجريبية الآن</button>
+        </div>
 
-    <section id="products">
-        <div class="section-title">أنظمة إدارة الأعمال الاحترافية</div>
-        <div class="products-grid">
-            <div class="product-card">
-                <div>
-                    <h3>صناعة برامج مخصصة للأعمال</h3>
-                    <ul>
-                        <li>تطوير برمجيات متكاملة سحابية لتناسب مجالك بالكامل.</li>
-                        <li>ربط الفروع وقواعد البيانات مع أعلى حماية وأمان.</li>
-                        <li>لوحات تحكم متقدمة لإدارة العمليات والمخازن.</li>
-                    </ul>
-                </div>
-                <div>
-                    <div class="price">حسب الطلب</div>
-                    <button class="btn-main" style="width: 100%;" onclick="orderSystem('برامج مخصصة للأعمال')">اطلب الآن</button>
-                </div>
+        <div class="grid">
+            <div class="card">
+                <h3>أنظمة إدارة الأعمال الاحترافية</h3>
+                <p>صناعة برامج مخصصة للأعمال</p>
+                <ul>
+                    <li>تطوير برمجيات متكاملة سحابية لتناسب مجالك بالكامل.</li>
+                    <li>ربط الفروع وقواعد البيانات مع أعلى حماية وأمان.</li>
+                    <li>لوحات تحكم متقدمة لإدارة العمليات والمخازن.</li>
+                </ul>
+                <div class="price">حسب الطلب</div>
+                <button class="btn" onclick="orderSystem('Custom Software System')">اطلب الآن</button>
             </div>
-            <div class="product-card">
-                <div>
-                    <h3>نظام المبيعات والكاشير المتكامل</h3>
-                    <ul>
-                        <li>إصدار الفواتير وطباعتها في ثوانٍ معدودة وبكل مرونة.</li>
-                        <li>نظام جرد آلي وتقارير يومية وأسبوعية للأرباح.</li>
-                        <li>دعم كامل لجميع الأجهزة والشاشات اللمسية.</li>
-                    </ul>
-                </div>
-                <div>
-                    <div class="price">2500 ج.م / سنوياً</div>
-                    <button class="btn-main" style="width: 100%;" onclick="orderSystem('نظام الكاشير والمبيعات')">اطلب الآن</button>
-                </div>
+
+            <div class="card">
+                <h3>نظام المبيعات والكاشير المتكامل</h3>
+                <p>إصدار الفواتير وطباعتها في ثوانٍ معدودة وبكل مرونة.</p>
+                <ul>
+                    <li>نظام جرد آلي وتقارير يومية وأسبوعية للأرباح.</li>
+                    <li>دعم كامل لجميع الأجهزة والشاشات اللمسية.</li>
+                </ul>
+                <div class="price">2500 ج.م / سنوياً</div>
+                <button class="btn" onclick="orderSystem('Cashier System V1')">اطلب الآن</button>
             </div>
         </div>
-    </section>
+        <div class="form-section">
+            <h3>📋 قسم تقديم الشكاوى للمتجر</h3>
+            <p style="text-align: center; font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">صوتك مسموع.. اكتب شكواك وسيتم مراجعتها من المسؤولين فوراً.</p>
+            <form id="complaintForm">
+                <div class="form-group">
+                    <label>الاسم الكريم:</label>
+                    <input type="text" id="compName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>تفاصيل الشكوى أو الملاحظة:</label>
+                    <textarea id="compMsg" class="form-control" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn">إرسال الشكوى رسمياً</button>
+            </form>
+        </div>
 
-    <section class="contact-section" id="complaints" style="margin-top:40px; background: rgba(217, 83, 79, 0.03); border-top: 1px solid rgba(217, 83, 79, 0.1);">
-        <div class="section-title" style="color:#d9534f; margin-top:10px;">📋 قسم تقديم الشكاوى للمتجر</div>
-        <p style="color:#a3b899; text-align:center; font-size:14px; margin-top:-15px; margin-bottom:20px;">صوتك مسموع.. اكتب شكواك وسيتم مراجعتها من المسؤولين فوراً.</p>
-        <form id="complaintForm">
-            <input type="text" id="compName" placeholder="اكتب اسمك الكريم هنا..." required>
-            <textarea id="compMsg" rows="4" placeholder="اكتب تفاصيل الشكوى أو المشكلة التي واجهتك بوضوح..." required></textarea>
-            <button type="submit" class="btn-main" style="background:#d9534f; color:#fff;">إرسال الشكوى رسمياً</button>
-        </form>
-    </section>
+        <div id="contact" class="form-section" style="margin-top: 20px;">
+            <h3>طلب الأنظمة أو التواصل معنا</h3>
+            <form id="contactForm" onsubmit="handleForm(e)">
+                <div class="form-group">
+                    <label>الاسم:</label>
+                    <input type="text" id="clientName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف أو الواتساب:</label>
+                    <input type="text" id="clientPhone" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>تفاصيل الطلب أو نوع النظام:</label>
+                    <textarea id="clientMsg" class="form-control" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn" style="background-color: #cd9b32;">إرسال الطلب للمبيعات</button>
+            </form>
+        </div>
+    </div>
 
-    <section class="contact-section" id="contact">
-        <div class="section-title">طلب الأنظمة أو التواصل معنا</div>
-        <form id="contactForm" onsubmit="handleForm(event)">
-            <input type="text" id="clientName" placeholder="الاسم الكريم" required>
-            <input type="text" id="clientPhone" placeholder="رقم الهاتف أو الواتساب" required>
-            <textarea id="clientMsg" rows="5" placeholder="اكتب تفاصيل النظام المطلوب ومجال عملك هنا..." required></textarea>
-            <button type="submit" class="btn-main">إرسال الطلب للمبيعات</button>
-        </form>
-    </section>
-    <div class="modal" id="adminModal">
+    <!-- مـودال إعدادات لوحة التحكم والإدارة للإدمن -->
+    <div id="adminPanelModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('adminModal')">&times;</span>
-            <h3 style="color:var(--primary); border-bottom:1px solid var(--border-color); padding-bottom:10px; margin-top:0;">⚙️ لوحة الإدارة والتحكم والصلاحيات</h3>
-            <div class="panel-row">
-                <h4>💼 إدارة رتب النظام وصلاحياتها</h4>
-                <div style="display:flex; gap:10px; margin-bottom:10px;">
-                    <input type="text" id="roleInput" placeholder="اسم الرتبة الجديدة..." style="flex:1; padding:8px;">
-                    <button onclick="addNewRole()" class="btn-main" style="padding:8px 15px;">إضافة رتبة</button>
-                </div>
-                <div id="rolesList" style="display:flex; flex-direction:column; gap:8px;"></div>
+            <button class="close-btn" onclick="closeModal('adminPanelModal')">×</button>
+            <h3 style="color: var(--primary); margin-bottom: 20px;">⚙ لوحة الإدارة والتحكم والصلاحيات</h3>
+            
+            <h4>💼 إدارة رتب النظام وصلاحياتها</h4>
+            <div class="form-group" style="display: flex; gap: 10px; margin-top: 10px;">
+                <input type="text" id="roleInput" class="form-control" placeholder="اسم الرتبة الجديدة...">
+                <button class="btn" style="width: auto; white-space: nowrap;" onclick="addNewRole()">إضافة رتبة</button>
             </div>
-            <div class="panel-row">
-                <h4>👥 توظيف وتعيين الموظفين الجدد</h4>
-                <div style="display:flex; flex-direction:column; gap:10px; background:#050a06; padding:12px; border-radius:5px;">
-                    <label style="font-size:13px; color:#a3b899;">ادخل معرف الزائر (ID) وتعيين رتبته:</label>
-                    <input type="text" id="empIdInput" placeholder="معرف الموظف (ID)..." style="padding:8px;">
-                    <select id="empRoleSelect" style="background:#050a06; color:#fff; border:1px solid #223a2a; padding:10px; border-radius:5px; outline:none;"></select>
-                    <button onclick="assignEmployee()" class="btn-main" style="margin-top:5px;">تفعيل قرار التعيين 💼</button>
-                </div>
-                <div id="empList" class="data-list"></div>
+            <div id="rolesList" style="margin-bottom: 20px;"></div>
+
+            <h4>👥 توظيف وتعيين الموظفين الجدد</h4>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 5px;">ادخل معرف الزائر (ID) وتعيين رتبته:</p>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <input type="text" id="empIdInput" class="form-control" placeholder="مثال: 456">
+                <select id="empRoleSelect" class="form-control"></select>
+                <button class="btn" style="width: auto; white-space: nowrap;" onclick="assignEmployee()">تفعيل قرار التعيين 💼</button>
             </div>
-            <div class="panel-row">
-                <h4>📬 الشكاوى المستلمة من العملاء</h4>
-                <div id="adminComplaintsList" class="data-list" style="max-height:200px; overflow-y:auto;"></div>
-            </div>
-            <div class="panel-row" style="border-bottom:none;">
-                <h4>📂 دليل معرفات الزوار والمستخدمين (Directory)</h4>
-                <button onclick="toggleUsersDirectory()" class="btn-main" style="background:transparent; border:1px solid var(--primary); color:var(--primary); width:100%;">استعراض / إخفاء كشف المعرفات 👤</button>
-                <div id="usersDirectoryList" class="data-list" style="display:none; max-height:180px; overflow-y:auto;"></div>
-            </div>
+            <div id="empList" style="margin-bottom: 20px;"></div>
+
+            <h4>📬 الشكاوى المستلمة من العملاء</h4>
+            <div id="adminComplaintsList" style="margin-bottom: 20px; max-height: 200px; overflow-y: auto;"></div>
+
+            <h4>📂 دليل معرفات الزوار والمستخدمين (Directory)</h4>
+            <button class="btn" style="background: #16a085; color: #fff; margin-bottom: 10px;" onclick="toggleUsersDirectory()">استعراض / إخفاء كشف المعرفات 👤</button>
+            <div id="usersDirectoryList" style="display: none; max-height: 200px; overflow-y: auto; background: #060b07; border: 1px solid var(--border-color); padding: 5px; border-radius: 4px;"></div>
         </div>
     </div>
-
-    <div class="modal" id="staffTicketsModal">
-        <div class="modal-content" style="max-width:750px;">
-            <span class="close-btn" onclick="closeModal('staffTicketsModal')">&times;</span>
-            <h3 style="color:var(--primary); border-bottom:1px solid var(--border-color); padding-bottom:10px; margin-top:0;">🎫 centre إدارة التذاكر وغرف المحادثة</h3>
-            <div class="staff-layout">
-                <div class="rooms-sidebar" id="roomsSidebar"></div>
-                <div class="staff-chat-area">
-                    <div id="staffChatContainer" style="border: 1px solid var(--border-color); background: #050a06; flex:1; overflow-y:auto; padding:10px; border-radius:5px; margin-bottom:10px;">
-                        <div style="color:#557755; text-align:center; margin-top:50px;">اختر تذكرة نشطة لبدء الدعم.</div>
-                    </div>
-                    <div class="chat-input">
-                        <input type="text" id="staffMsgInput" placeholder="اكتب رد الدعم هنا...">
-                        <button class="btn-main">إرسال</button>
-                    </div>
+    <!-- مودال إدارة التذاكر وغرف الدعم -->
+    <div id="staffTicketsModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('staffTicketsModal')">×</button>
+            <h3 style="color: var(--primary); margin-bottom: 15px;">🎫 centre إدارة التذاكر وغرف المحادثة</h3>
+            <div id="roomsList" style="margin-bottom: 15px; max-height: 150px; overflow-y: auto;">اختر تذكرة نشطة لبدء الدعم.</div>
+            <div id="chatBox" style="display: none; border: 1px solid var(--border-color); padding: 10px; border-radius: 4px; background: #060b07;">
+                <div id="chatMessages" style="height: 180px; overflow-y: auto; margin-bottom: 10px; padding: 5px;"></div>
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" id="staffMsgInput" class="form-control" placeholder="اكتب ردك الفني هنا...">
+                    <button class="btn" style="width: auto;" onclick="sendStaffMsg()">إرسال</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal" id="staffLoginModal">
-        <div class="modal-content" style="max-width:400px;">
-            <span class="close-btn" onclick="closeModal('staffLoginModal')">&times;</span>
-            <h3 style="color:var(--primary); text-align:center; margin-top:0;">🔐 بوابـة دخـول الطاقـم</h3>
-            <form onsubmit="handleStaffLogin(event)" style="margin-top:20px; display:flex; flex-direction:column; gap:12px;">
-                <label style="font-size:14px; color:#a3b899; margin-bottom:-5px;">اختر رتبتك الوظيفية:</label>
-                <select id="loginRoleSelect" style="background:#050a06; color:#fff; border:1px solid #223a2a; padding:12px; border-radius:5px; outline:none; font-family:inherit;"></select>
-                <label style="font-size:14px; color:#a3b899; margin-bottom:-5px;">أدخل كلمة مرور الرتبة:</label>
-                <input type="password" id="loginPasswordInput" placeholder="اكتب الباسورد السري للرتبة..." style="background:#050a06; border:1px solid #223a2a; color:#fff; padding:12px; border-radius:5px; outline:none;">
-                <button type="submit" class="btn-main" style="width:100%; margin-top:10px; padding:12px;">تحقق وتدقيق الصلاحيات 🛡️</button>
+    <!-- مودال دخول الموظفين السري للرتب -->
+    <div id="staffLoginModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <button class="close-btn" onclick="closeModal('staffLoginModal')">×</button>
+            <h3 style="color: var(--primary); text-align: center; margin-bottom: 15px;">🔐 بوابـة دخـول الطاقـم</h3>
+            <form id="staffLoginForm" onsubmit="handleStaffLogin(event)">
+                <div class="form-group">
+                    <label>اختر رتبتك الوظيفية:</label>
+                    <select id="loginRoleSelect" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label>أدخل كلمة مرور الرتبة:</label>
+                    <input type="password" id="loginPasswordInput" class="form-control" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn">تحقق وتدقيق الصلاحيات 🛡</button>
             </form>
         </div>
     </div>
 
     <footer>
-        <div>حقوق الطبع محفوظة لـ KW STORE &copy; ٢٠٢٦ - تطوير المسؤول يوسف</div>
-        <button class="btn-secret-login" onclick="openLoginModal()">قفل النظام 🔐</button>
+        <div style="font-size: 12px; color: var(--text-muted);">حقوق الطبع محفوظة لـ KW STORE © ٢٠٢٦ - تطوير المسؤول يوسف</div>
+        <button onclick="openLoginModal()" style="background: none; border: none; color: #060b07; cursor: pointer; font-size: 14px;" id="secretLockLink">قفل النظام 🔐</button>
     </footer>
 
     <script src="app.js"></script>
