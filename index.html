@@ -22,39 +22,59 @@
             background: rgba(11, 19, 14, 0.95); border-bottom: 1px solid rgba(205, 155, 50, 0.2);
             position: fixed; width: 100%; top: 0; z-index: 1000;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 50px; box-sizing: border-box; height: 80px;
+            padding: 15px 50px; box-sizing: border-box; min-height: 80px;
         }
         .logo {
             color: var(--primary); font-size: 32px; font-weight: bold;
             text-shadow: 0 0 15px rgba(205, 155, 50, 0.6); letter-spacing: 2px;
-            position: absolute; left: 50%; transform: translateX(-50%);
         }
-        .header-left { display: flex; align-items: center; gap: 15px; z-index: 1001; }
-        .header-right { display: flex; align-items: center; gap: 15px; z-index: 1001; color: var(--primary); font-weight: bold; }
+        .header-right { display: flex; align-items: center; gap: 15px; color: var(--primary); font-weight: bold; }
+        .header-left { display: flex; align-items: center; gap: 15px; }
         .btn-main {
             background: var(--primary); color: #000; padding: 10px 20px; font-size: 14px;
             font-weight: bold; border: none; border-radius: 5px; cursor: pointer; transition: 0.3s; text-decoration: none;
         }
         .btn-main:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent); transform: scale(1.05); }
-        #admin-nav-btn, #staff-nav-btn { color: #fff; border: none; padding: 10px 20px; font-size: 14px; font-weight: bold; border-radius: 5px; cursor: pointer; display: none; }
+        
+        #admin-nav-btn, #staff-nav-btn, #logout-system-btn { color: #fff; border: none; padding: 10px 20px; font-size: 14px; font-weight: bold; border-radius: 5px; cursor: pointer; display: none; }
         #admin-nav-btn { background: #d9534f; }
         #staff-nav-btn { background: #0275d8; }
+        #logout-system-btn { background: #777; margin-right: 5px; }
+        
         .hero { padding: 180px 20px 80px 20px; text-align: center; background: linear-gradient(180deg, rgba(0,255,102,0.05) 0%, transparent 100%); }
         .hero h1 { font-size: 42px; color: #fff; margin-bottom: 15px; }
         .hero h1 span { color: var(--primary); }
         .hero p { font-size: 18px; color: #a3b899; max-width: 600px; margin: 0 auto 30px auto; }
+        
         .section-title { text-align: center; font-size: 28px; color: var(--primary); margin: 50px 0 30px 0; }
         .products-grid { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; padding: 0 20px; }
-        .product-card { background: var(--card-bg); border: 1px solid #223a2a; border-radius: 10px; width: 350px; padding: 25px; box-sizing: border-box; text-align: right; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; }
-        .product-card:hover { border-color: var(--primary); transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .product-card h3 { color: #fff; margin-top: 0; font-size: 20px; }
-        .product-card ul { padding-right: 20px; color: #a3b899; font-size: 14px; line-height: 1.8; margin-bottom: auto;}
-        .price { font-size: 24px; color: var(--accent); font-weight: bold; margin: 20px 0; }
+        
+        .product-card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            border-radius: 10px; 
+            width: 350px; 
+            padding: 25px; 
+            box-sizing: border-box; 
+            text-align: right; 
+            transition: 0.3s; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .product-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .product-card h3 { color: #fff; margin: 0 0 10px 0; font-size: 20px; }
+        .product-card ul { padding-right: 20px; color: #a3b899; font-size: 14px; line-height: 1.8; margin: 0; }
+        .price { font-size: 24px; color: var(--accent); font-weight: bold; margin: 10px 0; }
+        
         .contact-section { background: rgba(18, 34, 24, 0.5); padding: 40px 20px; margin-top: 60px; width: 100%; display: flex; flex-direction: column; align-items: center; box-sizing: border-box; }
         form { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; }
-        form input, form textarea { background: #050a06; border: 1px solid #223a2a; color: #fff; padding: 12px; border-radius: 5px; outline: none; font-size: 15px; font-family: inherit; }
-        form input:focus, form textarea:focus { border-color: var(--primary); }
-        footer { text-align: center; padding: 20px; font-size: 13px; color: #557755; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 40px; width: 100%; }
+        form input, form textarea, form select { background: #050a06; border: 1px solid #223a2a; color: #fff; padding: 12px; border-radius: 5px; outline: none; font-size: 15px; font-family: inherit; transition: border-color 0.3s; }
+        form input:focus, form textarea:focus, form select:focus { border-color: var(--primary); }
+        
+        footer { text-align: center; padding: 25px 20px; font-size: 13px; color: #557755; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 40px; width: 100%; background: #060c09; }
+        
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; }
         .modal-content { background: var(--card-bg); border: 1px solid var(--primary); padding: 30px; border-radius: 10px; width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; position: relative; }
         .close-btn { position: absolute; top: 15px; left: 15px; font-size: 24px; color: #a3b899; cursor: pointer; }
@@ -63,19 +83,40 @@
         .panel-row h4 { margin: 0 0 10px 0; color: var(--primary); }
         .data-list { background: #050a06; padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 14px; }
         .data-item { display: flex; justify-content: space-between; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); align-items: center; color: #fff; }
-        .staff-layout { display: flex; gap: 15px; height: 350px; }
+        
+        .staff-layout { display: flex; gap: 15px; height: 400px; min-height: 350px; }
         .rooms-sidebar { width: 180px; border-left: 1px solid var(--border-color); overflow-y: auto; padding-left: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .staff-chat-area { flex: 1; display: flex; flex-direction: column; gap: 10px; }
         .room-tab { padding: 10px; background: #050a06; border: 1px solid var(--border-color); border-radius: 5px; cursor: pointer; text-align: right; font-size: 13px; color: #fff; }
         .room-tab.active { border-color: var(--primary); background: var(--border-color); }
+        .chat-input { display: flex; gap: 10px; }
+        .chat-input input { flex: 1; background: #050a06; border: 1px solid var(--border-color); padding: 10px; color: #fff; border-radius: 5px; }
+
+        .btn-secret-login {
+            background: #000; 
+            color: #444; 
+            border: 1px solid #111; 
+            padding: 4px 10px; 
+            font-size: 10px; 
+            cursor: pointer; 
+            border-radius: 3px; 
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .btn-secret-login:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
         @media (max-width: 768px) {
-            header { padding: 10px 15px; height: auto; flex-direction: column; gap: 10px; position: relative; }
-            .logo { position: static; transform: none; font-size: 24px; margin-bottom: 5px; }
+            header { padding: 15px; flex-direction: column; gap: 12px; text-align: center; }
+            .logo { font-size: 26px; }
             .header-left, .header-right { width: 100%; justify-content: center; flex-wrap: wrap; font-size: 13px; gap: 8px; }
-            .hero { padding: 60px 15px 40px 15px; }
+            .hero { padding: 140px 15px 40px 15px; }
             .hero h1 { font-size: 28px; line-height: 1.4; }
             .hero p { font-size: 15px; }
-            .products-grid { gap: 20px; padding: 0; }
-            .product-card { width: 100%; padding: 15px; }
+            .products-grid { gap: 20px; padding: 0 10px; }
+            .product-card { width: 100%; padding: 20px; }
             .modal-content { width: 95%; padding: 15px; font-size: 14px; }
             .staff-layout { flex-direction: column; height: auto; }
             .rooms-sidebar { width: 100%; border-left: none; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; flex-direction: row; overflow-x: auto; }
@@ -85,19 +126,22 @@
 </head>
 <body>
     <header>
-        👤 ID: Loading...</div>
+        <div class="header-right" id="headerIdentityRight">👤 جاري تحميل المعرف...</div>
         <div class="logo">KW STORE</div>
         <div class="header-left">
+            <button id="logout-system-btn" onclick="logoutStaff()">🚪 خروج</button>
             <button id="staff-nav-btn" onclick="openModal('staffTicketsModal')">🎫 تذاكر العاملين</button>
             <button id="admin-nav-btn" onclick="openModal('adminModal')">⚙️ إعدادات الصفحة</button>
             <span id="headerRoleLeft" style="color: var(--accent); font-weight: bold; background: rgba(0,255,102,0.1); padding: 5px 10px; border-radius: 4px;">Client</span>
         </div>
     </header>
+
     <section class="hero" id="home">
         <h1>إدارة أعمالك أصبحت <span>أسهل وأكثر أماناً</span></h1>
         <p>نحن نصنع برمجيات مخصصة وحلول كاشير ذكية مصممة خصيصاً لمساعدة المطاعم والسوبر ماركت على تنظيم حساباتهم ومخازنهم بدقة متناهية.</p>
         <a href="#contact" class="btn-main">اطلب نسختك التجريبية الآن</a>
     </section>
+
     <section id="products">
         <div class="section-title">أنظمة إدارة الأعمال الاحترافية</div>
         <div class="products-grid">
@@ -105,7 +149,7 @@
                 <div>
                     <h3>صناعة برامج مخصصة للأعمال</h3>
                     <ul>
-                        <li>تتطوير برمجيات متكاملة سحابية لتناسب مجالك بالكامل.</li>
+                        <li>تطوير برمجيات متكاملة سحابية لتناسب مجالك بالكامل.</li>
                         <li>ربط الفروع وقواعد البيانات مع أعلى حماية وأمان.</li>
                         <li>لوحات تحكم متقدمة لإدارة العمليات والمخازن.</li>
                     </ul>
@@ -131,6 +175,7 @@
             </div>
         </div>
     </section>
+
     <section class="contact-section" id="complaints" style="margin-top:40px; background: rgba(217, 83, 79, 0.03); border-top: 1px solid rgba(217, 83, 79, 0.1);">
         <div class="section-title" style="color:#d9534f; margin-top:10px;">📋 قسم تقديم الشكاوى للمتجر</div>
         <p style="color:#a3b899; text-align:center; font-size:14px; margin-top:-15px; margin-bottom:20px;">صوتك مسموع.. اكتب شكواك وسيتم مراجعتها من المسؤولين فوراً.</p>
@@ -140,6 +185,7 @@
             <button type="submit" class="btn-main" style="background:#d9534f; color:#fff;">إرسال الشكوى رسمياً</button>
         </form>
     </section>
+
     <section class="contact-section" id="contact">
         <div class="section-title">طلب الأنظمة أو التواصل معنا</div>
         <form id="contactForm" onsubmit="handleForm(event)">
@@ -149,6 +195,7 @@
             <button type="submit" class="btn-main">إرسال الطلب للمبيعات</button>
         </form>
     </section>
+
     <div class="modal" id="adminModal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('adminModal')">&times;</span>
@@ -166,7 +213,7 @@
                 <div style="display:flex; flex-direction:column; gap:10px; background:#050a06; padding:12px; border-radius:5px;">
                     <label style="font-size:13px; color:#a3b899;">ادخل معرف الزائر (ID) وتعيين رتبته:</label>
                     <input type="text" id="empIdInput" placeholder="معرف الموظف (ID)..." style="padding:8px;">
-                    <select id="empRoleSelect" style="background:#050a06; color:#fff; border:1px solid #223a2a; padding:10px; border-radius:5px; outline:none;"></select>
+                    <select id="empRoleSelect"></select>
                     <button onclick="assignEmployee()" class="btn-main" style="margin-top:5px;">تفعيل قرار التعيين 💼</button>
                 </div>
                 <div id="empList" class="data-list"></div>
@@ -182,6 +229,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal" id="staffTicketsModal">
         <div class="modal-content" style="max-width:750px;">
             <span class="close-btn" onclick="closeModal('staffTicketsModal')">&times;</span>
@@ -200,7 +248,28 @@
             </div>
         </div>
     </div>
-    <footer>حقوق الطبع محفوظة لـ KW STORE &copy; ٢٠٢٦ - تطوير المسؤول يوسف</footer>
+
+    <div class="modal" id="staffLoginModal">
+        <div class="modal-content" style="max-width:400px;">
+            <span class="close-btn" onclick="closeModal('staffLoginModal')">&times;</span>
+            <h3 style="color:var(--primary); text-align:center; margin-top:0;">🔐 بوابـة دخـول الطاقـم</h3>
+            <form onsubmit="handleStaffLogin(event)" style="margin-top:20px;">
+                <label style="font-size:13px; color:#a3b899;">اختر رتبتك الوظيفية:</label>
+                <select id="loginRoleSelect" style="width:100%; margin-top:5px; margin-bottom:15px; display:block;"></select>
+                
+                <label style="font-size:13px; color:#a3b899; display:block;">كلمة مرور الرتبة:</label>
+                <input type="password" id="loginPasswordInput" placeholder="أدخل كود المرور السري..." style="width:100%; margin-top:5px; box-sizing:border-box;">
+                
+                <button type="submit" class="btn-main" style="width:100%; margin-top:20px;">تحقق وتفويض الصلاحيات 🛡️</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div>حقوق الطبع محفوظة لـ KW STORE &copy; ٢٠٢٦ - تطوير المسؤول يوسف</div>
+        <button class="btn-secret-login" onclick="openLoginModal()">قفل النظام 🔐</button>
+    </footer>
+
     <script src="app.js"></script>
 </body>
 </html>
