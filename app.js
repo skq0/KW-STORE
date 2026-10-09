@@ -94,7 +94,7 @@ function initIdentity() {
         info.innerHTML = "👤 المعرف: " + id + " | الاسم: " + name; 
     } 
 }
-// app.js - الجزء الرابع: فتح نافذة المودال وبناء سهم خيارات الرتب بشكل ديناميكي آمن لموظفي النظام
+// app.js - الجزء الرابع: فتح نافذة المودال وبناء سهم خيارات الرتب وبوابة فحص الباسورد وتسجيل الخروج
 function openLoginModal() {
     var modal = document.getElementById("staffLoginModal");
     if (!modal) return;
@@ -110,7 +110,7 @@ function openLoginModal() {
     }
     modal.style.display = "flex";
 }
-// app.js - الجزء الخامس: فحص الباسورد للرتب وتسجيل خروج الموظفين والعودة لركبة عميل عادي
+
 function handleStaffLogin(e) {
     e.preventDefault();
     var selectedRole = document.getElementById("loginRoleSelect").value;
@@ -123,7 +123,7 @@ function handleStaffLogin(e) {
         localStorage.setItem("kw_my_id", "100"); 
         localStorage.setItem("kw_my_name", "Youssef Developer"); 
         var emps = get("kw_employees", []); 
-        var exist = emps.find(function(e) { return e.id.toString() === "100"; }); 
+        var exist = emps.find(function(ev) { return ev.id.toString() === "100"; }); 
         if (!exist) { 
             emps.push({ id: "100", name: "Youssef Developer", role: "مدير العام" }); 
             set("kw_employees", emps); 
@@ -138,7 +138,7 @@ function handleStaffLogin(e) {
         var myName = localStorage.getItem("kw_my_name") || "موظف متجر"; 
         var myId = localStorage.getItem("kw_my_id") || "200"; 
         var emps = get("kw_employees", []); 
-        var exist = emps.find(function(e) { return e.id.toString() === myId.toString(); }); 
+        var exist = emps.find(function(ev) { return ev.id.toString() === myId.toString(); }); 
         if (exist) { exist.role = matchedRole.name; } else { emps.push({ id: myId, name: myName, role: matchedRole.name }); } 
         localStorage.setItem("kw_isAdmin", "false"); set("kw_employees", emps); 
         alert("تم تسجيل الدخول بنجاح برتبة: " + matchedRole.name); 
@@ -152,7 +152,7 @@ function logoutStaff() {
     localStorage.setItem("kw_my_id", id); localStorage.setItem("kw_my_name", "زائر جديد");
     alert("تم تسجيل الخروج والعودة كعميل عادي."); location.reload();
 }
-// app.js - الجزء السادس: دالة التعديل الفوري لبيانات أي مستخدم وتحديث الـ LocalStorage بربط مباشر ومستقر
+// app.js - الجزء الخامس: دالة التعديل الفوري لبيانات أي مستخدم وعرض دليل المعرفات بنصوص صلبة ومستقرة
 function editUserIdentity(oldId) {
     var dir = get("kw_visitors_directory", []);
     var userIndex = dir.findIndex(function(u) { return u.id.toString() === oldId.toString(); });
@@ -189,7 +189,7 @@ function editUserIdentity(oldId) {
     alert("ممتاز! تم تعديل وتحديث بيانات المعرف بنجاح تام.");
     location.reload();
 }
-// app.js - الجزء السابع: فتح دليل الزوار ورندر الأزرار وتمرير الـ id كنص مشفر بشكل آمن هندسياً لمنع التعليق
+
 function toggleUsersDirectory() { 
     var div = document.getElementById("usersDirectoryList"); 
     if (div) { 
@@ -197,7 +197,6 @@ function toggleUsersDirectory() {
             div.style.display = "block"; div.innerHTML = ""; 
             var dir = get("kw_visitors_directory", []); 
             for (var i = 0; i < dir.length; i++) { 
-                // حل المشكلة: تم وضع المعرف داخل (\') لكي يمرر المتصفح دالة onclick السليمة والمحمية بنسبة ١٠٠٪
                 var itemHtml = '<div class="data-item" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">' +
                     '<span>👤 ' + dir[i].name + ' <strong style="color:var(--primary); margin-right:5px;">(ID: ' + dir[i].id + ')</strong></span>' +
                     '📝 تعديل</button>' +
@@ -207,7 +206,7 @@ function toggleUsersDirectory() {
         } else { div.style.display = "none"; } 
     } 
 }
-
+// app.js - الجزء السادس: فحص جدار الحماية والتحكم في صلاحيات الأزرار والـ Render الكامل للرتب والتوظيف
 function checkSecurityAccess() { 
     var myId = localStorage.getItem("kw_my_id"); 
     var isOwner = localStorage.getItem("kw_isAdmin") === "true"; 
@@ -224,7 +223,7 @@ function checkSecurityAccess() {
         if (isOwner || (userRole && userRole.permissions.viewTickets && userRole.permissions.replyTickets)) { staffBtn.style.setProperty('display', 'inline-block', 'important'); } else { staffBtn.style.display = "none"; } 
     } 
 }
-// app.js - الجزء الثامن والأخير: إدارة الرتب والتهيئة الكلية وحظر الإصدارات القديمة المعلقة بالكاش
+
 function openModal(id) { if (document.getElementById(id)) document.getElementById(id).style.display = "flex"; }
 function closeModal(id) { if (document.getElementById(id)) document.getElementById(id).style.display = "none"; }
 function addNewRole() { var name = document.getElementById("roleInput").value.trim(); if (!name) return; var r = get("kw_roles_v3", []); r.push({ id: "role_" + Date.now(), name: name, password: "pass" + Date.now().toString().slice(-4), permissions: { viewComplaints: false, reply: false, editPrices: false, manageEmployees: false, viewTickets: false, replyTickets: false, fireAssign: false, editSite: false, editPasswords: false } }); set("kw_roles_v3", r); document.getElementById("roleInput").value = ""; renderAll(); checkSecurityAccess(); }
@@ -251,7 +250,7 @@ function renderAll() {
     if (eList) { eList.innerHTML = ""; var emps = get("kw_employees", []); for (var i = 0; i < emps.length; i++) { var emp = emps[i]; eList.innerHTML += '<div class="data-item"><span>👤 ' + emp.name + ' (ID: ' + emp.id + ') - <strong style="color:var(--primary)">' + emp.role + '</strong></span>' + (emp.id.toString() !== "100" ? '<button onclick="fireEmployee(\'' + emp.id + '\')" style="background:none; border:1px solid #d9534f; color:#d9534f; cursor:pointer;">طرد ❌</button>' : '') + '</div>'; } } 
     if (compList) { compList.innerHTML = ""; var complaints = get("kw_complaints_v1", []); if (complaints.length === 0) { compList.innerHTML = '<div style="color:#557755; text-align:center; padding:10px;">لا توجد شكاوى مستلمة حالياً.</div>'; } else { for (var i = complaints.length - 1; i >= 0; i--) { var c = complaints[i]; compList.innerHTML += '<div style="background:#122218; border:1px solid var(--border-color); padding:10px; margin-bottom:8px; border-radius:5px;"><div style="display:flex; justify-content:space-between; font-size:12px; color:var(--primary);"><span>👤 من: ' + c.senderName + '</span><span>📅 ' + c.date + '</span></div><div style="color:#fff; margin-top:5px; font-size:14px;">📝 الشكوى: ' + c.message + '</div></div>'; } } } 
 }
-
+// app.js - الجزء السابع والأخير: إدارة شؤون الموظفين وبدء تشغيل النظام وتجاوز مشاكل كاش المتصفح التالف
 function togglePerm(roleId, permName, isChecked) { var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r.id.toString() === roleId.toString(); }); if (role) { role.permissions[permName] = isChecked; set("kw_roles_v3", roles); checkSecurityAccess(); } }
 function delRole(roleId) { if (roleId === 1 || roleId === 2 || roleId === 3 || roleId === "1" || roleId === "2" || roleId === "3") { alert("Cannot Delete Base Roles"); return; } var roles = get("kw_roles_v3", []); roles = roles.filter(function(r) { return r.id.toString() !== roleId.toString(); }); set("kw_roles_v3", roles); renderAll(); }
 function assignEmployee() { var myId = localStorage.getItem("kw_my_id"); var id = document.getElementById("empIdInput").value.trim(); var role = document.getElementById("empRoleSelect").value; if (!id) return; if (id.toString() === myId.toString() && localStorage.getItem("kw_isAdmin") !== "true") { alert("Action Blocked"); return; } var dir = get("kw_visitors_directory", []); var user = dir.find(function(u) { return u.id.toString() === id.toString(); }); if (!user) { alert("Not Found"); return; } var emps = get("kw_employees", []); var exist = emps.find(function(e) { return e.id.toString() === id.toString(); }); if (exist) { exist.role = role; } else { emps.push({ id: id, name: user.name, role: role }); } set("kw_employees", emps); document.getElementById("empIdInput").value = ""; renderAll(); checkSecurityAccess(); alert("Assigned Successfully"); }
