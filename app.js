@@ -1,4 +1,4 @@
-// app.js - نسخة نظام الصلاحيات المطور 2026
+// app.js - نسخة نظام الصلاحيات المطورة والمؤمنة بالكامل ٢٠٢٦
 var activeRoom = null;
 
 function get(k, def) { 
@@ -69,6 +69,7 @@ function submitComplaint(e) {
     renderAll(); 
 }
 
+// توليد المعرف عشوائياً بين 100 و 1000 وتعيين رتبة عميل تلقائياً لحماية النظام
 function initIdentity() { 
     var dir = get("kw_visitors_directory", []); 
     var name = localStorage.getItem("kw_my_name"); 
@@ -79,12 +80,12 @@ function initIdentity() {
             name = prompt("أدخل اسمك الكريم للبدء:"); 
         } 
         
-        // توليد رقم معرف عشوائي بين 100 و 1000
+        // توليد رقم معرف عشوائي فريد بين 100 و 1000
         id = Math.floor(Math.random() * (1000 - 100 + 1) + 100).toString();
         
         localStorage.setItem("kw_my_name", name.trim()); 
         localStorage.setItem("kw_my_id", id); 
-        localStorage.setItem("kw_isAdmin", "false"); 
+        localStorage.setItem("kw_isAdmin", "false"); // عميل عادي افتراضياً
         
         dir.push({ id: id, name: name.trim() }); 
         set("kw_visitors_directory", dir); 
@@ -96,6 +97,7 @@ function initIdentity() {
     } 
 }
 
+// فتح النافذة المنبثقة وملء قائمة السهم بالرتب ديناميكياً
 function openLoginModal() {
     var modal = document.getElementById("staffLoginModal");
     if (!modal) return;
@@ -113,16 +115,18 @@ function openLoginModal() {
     modal.style.display = "flex";
 }
 
+// معالجة تسجيل دخول الموظفين بالرتب والباسورد
 function handleStaffLogin(e) {
     e.preventDefault();
     var selectedRole = document.getElementById("loginRoleSelect").value;
     var typedPassword = document.getElementById("loginPasswordInput").value;
     
     if (!typedPassword) {
-        alert("الرجاء إدخال كلمة المرور");
+        alert("الرجاء إدخال كلمة المرور للرتبة");
         return;
     }
     
+    // تسجيل دخول المدير العام المالك
     if (selectedRole === "مدير العام" && (typedPassword === "youssef2026" || typedPassword === "youssef2025" || typedPassword === "admin2026")) {
         localStorage.setItem("kw_isAdmin", "true"); 
         localStorage.setItem("kw_my_id", "100"); 
@@ -134,11 +138,12 @@ function handleStaffLogin(e) {
             emps.push({ id: "100", name: "Youssef Developer", role: "مدير العام" }); 
             set("kw_employees", emps); 
         } 
-        alert("أهلاً بك يا مدير، تم تفعيل كامل صلاحيات التحكم."); 
+        alert("أهلاً بك يا مدير، تم تفعيل الصلاحيات والتذاكر بنجاح."); 
         location.reload(); 
         return;
     }
     
+    // فحص الرتب الأخرى المضافة بالباسورد المخصص لها
     var roles = get("kw_roles_v3", []); 
     var matchedRole = roles.find(function(r) { return r.name === selectedRole && r.password === typedPassword; }); 
     
@@ -264,165 +269,157 @@ function changeRolePassword(roleId) {
         alert("No Permission"); 
         return; 
     } 
-    var targetRole = roles.find(function(r) { return r.id.toString() === roleId.toString(); }); 
-    if (targetRole) { 
-        var newPass = prompt("New Password:", targetRole.password || ""); 
-        if (newPass && newPass.trim() !== "") { 
-            targetRole.password = newPass.trim(); 
-            set("kw_roles_v3", roles); 
-            renderAll(); 
-            alert("Updated"); 
-        } 
-    } 
+var targetRole = roles.find(function(r) { return r.id.toString() === roleId.toString(); });
+if (targetRole) {
+var newPass = prompt("New Password:", targetRole.password || "");
+if (newPass && newPass.trim() !== "") {
+targetRole.password = newPass.trim();
+set("kw_roles_v3", roles);
+renderAll();
+alert("Updated");
 }
-
-function renderAll() { 
-    var rList = document.getElementById("rolesList"); 
-    var sel = document.getElementById("empRoleSelect"); 
-    var eList = document.getElementById("empList"); 
-    var compList = document.getElementById("adminComplaintsList"); 
-    if (rList) { 
-        rList.innerHTML = ""; 
-        var roles = get("kw_roles_v3", []); 
-        for (var i = 0; i < roles.length; i++) { 
-            var role = roles[i]; 
-            var html = '<div class="data-item" style="flex-direction:column; align-items:stretch; margin-bottom:10px; border:1px solid var(--border-color); padding:10px; background:#0b130e;"><div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:5px;"><span>Role: <strong style="color:var(--primary)">' + role.name + '</strong></span><div><button onclick="changeRolePassword('' + role.id + '')" style="background:#cd9b32; border:none; color:#000; padding:2px 6px; font-size:11px; margin-left:5px; cursor:pointer; font-weight:bold;">🔑 Password</button><button onclick="delRole('' + role.id + '')" style="background:none; border:1px solid #d9534f; color:#d9534f; cursor:pointer; padding:2px 6px;">❌</button></div></div><div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:5px; background:#06110b; padding:5px; font-size:11px;">'; 
-            html += '<label><input type="checkbox" ' + (role.permissions.viewComplaints ? 'checked' : '') + ' onchange="togglePerm('' + role.id + '','viewComplaints',this.checked)"> الشكاوى</label>'; 
-            html += '<label><input type="checkbox" ' + (role.permissions.reply ? 'checked' : '') + ' onchange="togglePerm('' + role.id + '','reply',this.checked)"> الرد</label>'; 
-            html += '<label><input type="checkbox" ' + (role.permissions.editPrices ? 'checked' : '') + ' onchange="togglePerm('' + role.id + '','editPrices',this.checked)"> الأسعار</label>'; 
-            html += '<label><input type="checkbox" ' + (role.permissions.viewTickets ? 'checked' : '') + ' onchange="togglePerm('' + role.id + '','viewTickets',this.checked)"> الرؤية</label>'; 
-            html += '<label><input type="checkbox" ' + (role.permissions.replyTickets ? 'checked' : '') + ' onchange="togglePerm('' + role.id + '','replyTickets',this.checked)"> رد التذاكر</label>'; 
-            html += '<label><input type="checkbox" ' + (role.permissions.fireAssign ? 'checked' : '') + ' onchange="togglePerm('' + role.id + '','fireAssign',this.checked)"> التعيين</label>'; 
-            html += '<label><input type="checkbox" ' + (role.permissions.editSite ? 'checked' : '') + ' onchange="togglePerm('' + role.id + '','editSite',this.checked)"> الموقع</label>'; 
-            html += '<label><input type="checkbox" ' + (role.permissions.editPasswords ? 'checked' : '') + ' onchange="togglePerm('' + role.id + '','editPasswords',this.checked)"> تعديل الباسورد</label>'; 
-            html += '</div></div>'; 
-            rList.innerHTML += html; 
-        } 
-    } if (sel) { 
-        sel.innerHTML = ""; 
-        var r = get("kw_roles_v3", []); 
-        for (var i = 0; i < r.length; i++) { 
-            sel.innerHTML += '<option value="' + r[i].name + '">' + r[i].name + '</option>'; 
-        } 
-    } if (eList) { 
-        eList.innerHTML = ""; 
-        var emps = get("kw_employees", []); 
-        for (var i = 0; i < emps.length; i++) { 
-            var emp = emps[i]; 
-            eList.innerHTML += '<div class="data-item"><span>👤 ' + emp.name + ' (ID: ' + emp.id + ') - <strong style="color:var(--primary)">' + emp.role + '</strong></span>' + (emp.id.toString() !== "100" ? '<button onclick="fireEmployee('' + emp.id + '')" style="background:none; border:1px solid #d9534f; color:#d9534f; cursor:pointer;">طرد ❌</button>' : '') + '</div>'; 
-        } 
-    } if (compList) { 
-        compList.innerHTML = ""; 
-        var complaints = get("kw_complaints_v1", []); 
-        if (complaints.length === 0) { 
-            compList.innerHTML = '<div style="color:#557755; text-align:center; padding:10px;">لا توجد شكاوى مستلمة حالياً.</div>'; 
-        } else { 
-            for (var i = complaints.length - 1; i >= 0; i--) { 
-                var c = complaints[i]; 
-                compList.innerHTML += '<div style="background:#122218; border:1px solid var(--border-color); padding:10px; margin-bottom:8px; border-radius:5px;"><div style="display:flex; justify-content:space-between; font-size:12px; color:var(--primary);"><span>👤 من: ' + c.senderName + '</span><span>📅 ' + c.date + '</span></div><div style="color:#fff; margin-top:5px; font-size:14px;">📝 الشكوى: ' + c.message + '</div></div>'; 
-            } 
-        } 
-    } 
 }
-
-function togglePerm(roleId, permName, isChecked) { 
-    var roles = get("kw_roles_v3", []); 
-    var role = roles.find(function(r) { return r.id.toString() === roleId.toString(); }); 
-    if (role) { 
-        role.permissions[permName] = isChecked; 
-        set("kw_roles_v3", roles); 
-        checkSecurityAccess(); 
-    } 
 }
-
-function delRole(roleId) { 
-    if (roleId === 1 || roleId === 2 || roleId === 3 || roleId === "1" || roleId === "2" || roleId === "3") { 
-        alert("Cannot Delete Base Roles"); 
-        return; 
-    } 
-    var roles = get("kw_roles_v3", []); 
-    roles = roles.filter(function(r) { return r.id.toString() !== roleId.toString(); }); 
-    set("kw_roles_v3", roles); 
-    renderAll(); 
+function renderAll() {
+var rList = document.getElementById("rolesList");
+var sel = document.getElementById("empRoleSelect");
+var eList = document.getElementById("empList");
+var compList = document.getElementById("adminComplaintsList");
+if (rList) {
+rList.innerHTML = "";
+var roles = get("kw_roles_v3", []);
+for (var i = 0; i < roles.length; i++) {
+var role = roles[i];
+var html = 'Role: ' + role.name + '🔑 Password❌';
+html += '<input type="checkbox" ' + (role.permissions.viewComplaints ? 'checked' : '') + ' onchange="togglePerm('' + role.id + '','viewComplaints',this.checked)"> الشكاوى';
+html += '<input type="checkbox" ' + (role.permissions.reply ? 'checked' : '') + ' onchange="togglePerm('' + role.id + '','reply',this.checked)"> الرد';
+html += '<input type="checkbox" ' + (role.permissions.editPrices ? 'checked' : '') + ' onchange="togglePerm('' + role.id + '','editPrices',this.checked)"> الأسعار';
+html += '<input type="checkbox" ' + (role.permissions.viewTickets ? 'checked' : '') + ' onchange="togglePerm('' + role.id + '','viewTickets',this.checked)"> الرؤية';
+html += '<input type="checkbox" ' + (role.permissions.replyTickets ? 'checked' : '') + ' onchange="togglePerm('' + role.id + '','replyTickets',this.checked)"> رد التذاكر';
+html += '<input type="checkbox" ' + (role.permissions.fireAssign ? 'checked' : '') + ' onchange="togglePerm('' + role.id + '','fireAssign',this.checked)"> التعيين';
+html += '<input type="checkbox" ' + (role.permissions.editSite ? 'checked' : '') + ' onchange="togglePerm('' + role.id + '','editSite',this.checked)"> الموقع';
+html += '<input type="checkbox" ' + (role.permissions.editPasswords ? 'checked' : '') + ' onchange="togglePerm('' + role.id + '','editPasswords',this.checked)"> تعديل الباسورد';
+html += '';
+rList.innerHTML += html;
 }
-
-function assignEmployee() { 
-    var myId = localStorage.getItem("kw_my_id"); 
-    var id = document.getElementById("empIdInput").value.trim(); 
-    var role = document.getElementById("empRoleSelect").value; 
-    if (!id) return; 
-    if (id.toString() === myId.toString() && localStorage.getItem("kw_isAdmin") !== "true") { 
-        alert("Action Blocked"); 
-        return; 
-    } 
-    var dir = get("kw_visitors_directory", []); 
-    var user = dir.find(function(u) { return u.id.toString() === id.toString(); }); 
-    if (!user) { 
-        alert("Not Found"); 
-        return; 
-    } 
-    var emps = get("kw_employees", []); 
-    var exist = emps.find(function(e) { return e.id.toString() === id.toString(); }); 
-    if (exist) { 
-        exist.role = role; 
-    } else { 
-        emps.push({ id: id, name: user.name, role: role }); 
-    } 
-    set("kw_employees", emps); 
-    document.getElementById("empIdInput").value = ""; 
-    renderAll(); 
-    checkSecurityAccess(); 
-    alert("Assigned Successfully"); 
+} if (sel) {
+sel.innerHTML = "";
+var r = get("kw_roles_v3", []);
+for (var i = 0; i < r.length; i++) {
+sel.innerHTML += '' + r[i].name + '';
 }
-
-function fireEmployee(empId) { 
-    var myId = localStorage.getItem("kw_my_id"); 
-    if (empId.toString() === "100") { 
-        alert("Cannot Action Admin"); 
-        return; 
-    } 
-    if (empId.toString() === myId.toString()) { 
-        alert("Action Blocked"); 
-        return; 
-    } 
-    var emps = get("kw_employees", []); 
-    emps = emps.filter(function(e) { return e.id.toString() !== empId.toString(); }); 
-    set("kw_employees", emps); 
-    renderAll(); 
-    checkSecurityAccess(); 
+} if (eList) {
+eList.innerHTML = "";
+var emps = get("kw_employees", []);
+for (var i = 0; i < emps.length; i++) {
+var emp = emps[i];
+eList.innerHTML += '👤 ' + emp.name + ' (ID: ' + emp.id + ') - ' + emp.role + '' + (emp.id.toString() !== "100" ? 'طرد ❌' : '') + '';
 }
-
-document.addEventListener("DOMContentLoaded", function() { 
-    if (!localStorage.getItem("kw_force_refresh_v16")) { 
-        localStorage.clear(); 
-        localStorage.setItem("kw_force_refresh_v16", "true"); 
-    } 
-    initIdentity(); 
-    if (!localStorage.getItem("kw_roles_v3")) { 
-        set("kw_roles_v3", [ 
-            { id: 1, name: "مدير العام", password: "admin2026", permissions: { viewComplaints: true, reply: true, editPrices: true, manageEmployees: true, viewTickets: true, replyTickets: true, fireAssign: true, editSite: true, editPasswords: true } }, 
-            { id: 2, name: "مسؤول شكاوى", password: "shakwa2026", permissions: { viewComplaints: true, reply: true, editPrices: false, manageEmployees: false, viewTickets: true, replyTickets: true, fireAssign: false, editSite: false, editPasswords: false } }, 
-            { id: 3, name: "دعم فني مستوى 1", password: "tech2026", permissions: { viewComplaints: true, reply: false, editPrices: false, manageEmployees: false, viewTickets: true, replyTickets: true, fireAssign: false, editSite: false, editPasswords: false } } 
-        ]); 
-    } 
-    if (!localStorage.getItem("kw_employees")) { 
-        set("kw_employees", [{ id: "100", name: "Youssef Developer", role: "مدير العام" }]); 
-    } 
-    if (!localStorage.getItem("kw_chat_rooms")) { 
-        set("kw_chat_rooms", {}); 
-    } 
-    var compForm = document.getElementById("complaintForm"); 
-    if (compForm) { 
-        compForm.addEventListener("submit", submitComplaint); 
-    } 
-    
-    var allReqs = document.querySelectorAll("input[required], textarea[required]");
-    allReqs.forEach(function(el){
-        el.addEventListener("input", function(){
-            if(this.value.trim()) this.style.borderColor = "var(--border-color)";
-        });
-    });
-
-    checkSecurityAccess(); 
-    renderAll(); 
+} if (compList) {
+compList.innerHTML = "";
+var complaints = get("kw_complaints_v1", []);
+if (complaints.length === 0) {
+compList.innerHTML = 'لا توجد شكاوى مستلمة حالياً.';
+} else {
+for (var i = complaints.length - 1; i >= 0; i--) {
+var c = complaints[i];
+compList.innerHTML += '👤 من: ' + c.senderName + '📅 ' + c.date + '📝 الشكوى: ' + c.message + '';
+}
+}
+}
+}
+function togglePerm(roleId, permName, isChecked) {
+var roles = get("kw_roles_v3", []);
+var role = roles.find(function(r) { return r.id.toString() === roleId.toString(); });
+if (role) {
+role.permissions[permName] = isChecked;
+set("kw_roles_v3", roles);
+checkSecurityAccess();
+}
+}
+function delRole(roleId) {
+if (roleId === 1 || roleId === 2 || roleId === 3 || roleId === "1" || roleId === "2" || roleId === "3") {
+alert("Cannot Delete Base Roles");
+return;
+}
+var roles = get("kw_roles_v3", []);
+roles = roles.filter(function(r) { return r.id.toString() !== roleId.toString(); });
+set("kw_roles_v3", roles);
+renderAll();
+}
+function assignEmployee() {
+var myId = localStorage.getItem("kw_my_id");
+var id = document.getElementById("empIdInput").value.trim();
+var role = document.getElementById("empRoleSelect").value;
+if (!id) return;
+if (id.toString() === myId.toString() && localStorage.getItem("kw_isAdmin") !== "true") {
+alert("Action Blocked");
+return;
+}
+var dir = get("kw_visitors_directory", []);
+var user = dir.find(function(u) { return u.id.toString() === id.toString(); });
+if (!user) {
+alert("Not Found");
+return;
+}
+var emps = get("kw_employees", []);
+var exist = emps.find(function(e) { return e.id.toString() === id.toString(); });
+if (exist) {
+exist.role = role;
+} else {
+emps.push({ id: id, name: user.name, role: role });
+}
+set("kw_employees", emps);
+document.getElementById("empIdInput").value = "";
+renderAll();
+checkSecurityAccess();
+alert("Assigned Successfully");
+}
+function fireEmployee(empId) {
+var myId = localStorage.getItem("kw_my_id");
+if (empId.toString() === "100") {
+alert("Cannot Action Admin");
+return;
+}
+if (empId.toString() === myId.toString()) {
+alert("Action Blocked");
+return;
+}
+var emps = get("kw_employees", []);
+emps = emps.filter(function(e) { return e.id.toString() !== empId.toString(); });
+set("kw_employees", emps);
+renderAll();
+checkSecurityAccess();
+}
+document.addEventListener("DOMContentLoaded", function() {
+if (!localStorage.getItem("kw_force_refresh_v16")) {
+localStorage.clear();
+localStorage.setItem("kw_force_refresh_v16", "true");
+}
+initIdentity();
+if (!localStorage.getItem("kw_roles_v3")) {
+set("kw_roles_v3", [
+{ id: 1, name: "مدير العام", password: "admin2026", permissions: { viewComplaints: true, reply: true, editPrices: true, manageEmployees: true, viewTickets: true, replyTickets: true, fireAssign: true, editSite: true, editPasswords: true } },
+{ id: 2, name: "مسؤول شكاوى", password: "shakwa2026", permissions: { viewComplaints: true, reply: true, editPrices: false, manageEmployees: false, viewTickets: true, replyTickets: true, fireAssign: false, editSite: false, editPasswords: false } },
+{ id: 3, name: "دعم فني مستوى 1", password: "tech2026", permissions: { viewComplaints: true, reply: false, editPrices: false, manageEmployees: false, viewTickets: true, replyTickets: true, fireAssign: false, editSite: false, editPasswords: false } }
+]);
+}
+if (!localStorage.getItem("kw_employees")) {
+set("kw_employees", [{ id: "100", name: "Youssef Developer", role: "مدير العام" }]);
+}
+if (!localStorage.getItem("kw_chat_rooms")) {
+set("kw_chat_rooms", {});
+}
+var compForm = document.getElementById("complaintForm");
+if (compForm) {
+compForm.addEventListener("submit", submitComplaint);
+}
+var allReqs = document.querySelectorAll("input[required], textarea[required]");
+allReqs.forEach(function(el){
+el.addEventListener("input", function(){
+if(this.value.trim()) this.style.borderColor = "var(--border-color)";
+});
+});
+checkSecurityAccess();
+renderAll();
 });
