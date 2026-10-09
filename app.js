@@ -44,7 +44,7 @@ function handleForm(e) {
     alert("Success"); 
     if(document.getElementById("contactForm")) document.getElementById("contactForm").reset(); 
 }
-// app.js - الجزء الثالث: معالجة إرسال الشكاوى وبناء نظام المعرفات العشوائية الآمنة (100-1000)
+// app.js - الجزء الثالث: معالجة إرسال الشكاوى وبناء نظام المعرفات العشوائية الآمنة (100-1000) وعرضها بالأعلى
 function submitComplaint(e) { 
     e.preventDefault(); 
     if (!validateFormInputs("complaintForm")) {
@@ -90,7 +90,7 @@ function initIdentity() {
     
     var info = document.getElementById("headerIdentityRight"); 
     if (info) { 
-        info.innerText = "👤 المعرف: " + id + " | الاسم: " + name; 
+        info.innerHTML = "👤 المعرف: " + id + " | الاسم: " + name; 
     } 
 }
 // app.js - الجزء الرابع: فتح نافذة المودال وبناء سهم خيارات الرتب بشكل ديناميكي آمن
@@ -102,12 +102,14 @@ function openLoginModal() {
         select.innerHTML = '<option value="مدير العام">مدير العام (المالك الأصلي)</option>';
         var roles = get("kw_roles_v3", []);
         roles.forEach(function(r) {
-            if (r.name !== "مدير العام") { select.innerHTML += '<option value="' + r.name + '">' + r.name + '</option>'; }
+            if (r.name !== "مدير العام") { 
+                select.innerHTML += '<option value="' + r.name + '">' + r.name + '</option>'; 
+            }
         });
     }
     modal.style.display = "flex";
 }
-// app.js - الجزء الخامس: منطق التحقق من كلمة مرور الرتب المنسدلة ووظيفة تسجيل الخروج
+// app.js - الجزء الخامس: فحص الباسورد للرتب وتسجيل خروج الموظفين والعودة لركبة عميل عادي
 function handleStaffLogin(e) {
     e.preventDefault();
     var selectedRole = document.getElementById("loginRoleSelect").value;
@@ -121,7 +123,10 @@ function handleStaffLogin(e) {
         localStorage.setItem("kw_my_name", "Youssef Developer"); 
         var emps = get("kw_employees", []); 
         var exist = emps.find(function(e) { return e.id.toString() === "100"; }); 
-        if (!exist) { emps.push({ id: "100", name: "Youssef Developer", role: "مدير العام" }); set("kw_employees", emps); } 
+        if (!exist) { 
+            emps.push({ id: "100", name: "Youssef Developer", role: "مدير العام" }); 
+            set("kw_employees", emps); 
+        } 
         alert("أهلاً بك يا مدير، تم تفعيل كامل صلاحيات الإعدادات والتذاكر."); 
         location.reload(); return;
     }
@@ -146,14 +151,14 @@ function logoutStaff() {
     localStorage.setItem("kw_my_id", id); localStorage.setItem("kw_my_name", "زائر جديد");
     alert("تم تسجيل الخروج والعودة كعميل عادي."); location.reload();
 }
-// app.js - الجزء السادس: وظيفة التعديل الفوري لبيانات المستخدمين وربطها بأزرار الكشف
+// app.js - الجزء السادس: دالة التعديل الفوري لبيانات أي مستخدم وتحديث الـ LocalStorage بربط مباشر
 function editUserIdentity(oldId) {
     var dir = get("kw_visitors_directory", []);
-    var user = dir.find(function(u) { return u.id.toString() === oldId.toString(); });
-    if (!user) return;
+    var userIndex = dir.findIndex(function(u) { return u.id.toString() === oldId.toString(); });
+    if (userIndex === -1) return;
 
-    var newName = prompt("تعديل الاسم الكريم:", user.name);
-    var newId = prompt("تعديل الـ ID (يجب أن يكون فريداً):", user.id);
+    var newName = prompt("تعديل الاسم الكريم الجديد:", dir[userIndex].name);
+    var newId = prompt("تعديل الـ ID الجديد (يجب أن يكون فريداً):", dir[userIndex].id);
 
     if (!newName || !newName.trim() || !newId || !newId.trim()) { alert("البيانات المدخلة غير صالحة!"); return; }
     
@@ -176,14 +181,14 @@ function editUserIdentity(oldId) {
         set("kw_employees", emps);
     }
 
-    user.name = newName.trim();
-    user.id = newId.trim();
+    dir[userIndex].name = newName.trim();
+    dir[userIndex].id = newId.trim();
     set("kw_visitors_directory", dir);
 
     alert("تم تحديث البيانات بنجاح في النظام.");
     location.reload();
 }
-
+// app.js - الجزء السابع: فتح دليل الزوار ورندر الأزرار التفاعلية لتعديل الصلاحيات والأمان لـ KW STORE
 function toggleUsersDirectory() { 
     var div = document.getElementById("usersDirectoryList"); 
     if (div) { 
@@ -191,7 +196,7 @@ function toggleUsersDirectory() {
             div.style.display = "block"; div.innerHTML = ""; 
             var dir = get("kw_visitors_directory", []); 
             for (var i = 0; i < dir.length; i++) { 
-                div.innerHTML += '<div class="data-item" style="gap: 5px; flex-wrap: wrap;">' +
+                div.innerHTML += '<div class="data-item" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">' +
                     '<span>👤 ' + dir[i].name + ' <strong style="color:var(--primary); margin-right:5px;">(ID: ' + dir[i].id + ')</strong></span>' +
                     '📝 تعديل</button>' +
                     '</div>'; 
@@ -199,7 +204,7 @@ function toggleUsersDirectory() {
         } else { div.style.display = "none"; } 
     } 
 }
-// app.js - الجزء السابع: تدقيق صلاحيات أزرار الهيدر وبناء الجداول والتهيئة الشاملة للموقع
+
 function checkSecurityAccess() { 
     var myId = localStorage.getItem("kw_my_id"); 
     var isOwner = localStorage.getItem("kw_isAdmin") === "true"; 
@@ -216,7 +221,7 @@ function checkSecurityAccess() {
         if (isOwner || (userRole && userRole.permissions.viewTickets && userRole.permissions.replyTickets)) { staffBtn.style.setProperty('display', 'inline-block', 'important'); } else { staffBtn.style.display = "none"; } 
     } 
 }
-
+// app.js - الجزء الثامن: بناء الصلاحيات الافتراضية والشكاوى وتثبيت مستمعي الأحداث عند تشغيل الصفحة
 function openModal(id) { if (document.getElementById(id)) document.getElementById(id).style.display = "flex"; }
 function closeModal(id) { if (document.getElementById(id)) document.getElementById(id).style.display = "none"; }
 function addNewRole() { var name = document.getElementById("roleInput").value.trim(); if (!name) return; var r = get("kw_roles_v3", []); r.push({ id: "role_" + Date.now(), name: name, password: "pass" + Date.now().toString().slice(-4), permissions: { viewComplaints: false, reply: false, editPrices: false, manageEmployees: false, viewTickets: false, replyTickets: false, fireAssign: false, editSite: false, editPasswords: false } }); set("kw_roles_v3", r); document.getElementById("roleInput").value = ""; renderAll(); checkSecurityAccess(); }
@@ -255,14 +260,14 @@ document.addEventListener("DOMContentLoaded", function() {
     if (!localStorage.getItem("kw_roles_v3")) { 
         set("kw_roles_v3", [ 
             { id: 1, name: "مدير العام", password: "admin2026", permissions: { viewComplaints: true, reply: true, editPrices: true, manageEmployees: true, viewTickets: true, replyTickets: true, fireAssign: true, editSite: true, editPasswords: true } }, 
-{ id: 2, name: "مسؤول شكاوى", password: "shakwa2026", permissions: { viewComplaints: true, reply: true, editPrices: false, manageEmployees: false, viewTickets: true, replyTickets: true, fireAssign: false, editSite: false, editPasswords: false } },
-{ id: 3, name: "دعم فني مستوى 1", password: "tech2026", permissions: { viewComplaints: true, reply: false, editPrices: false, manageEmployees: false, viewTickets: true, replyTickets: true, fireAssign: false, editSite: false, editPasswords: false } }
-]);
-}
-if (!localStorage.getItem("kw_employees")) { set("kw_employees", [{ id: "100", name: "Youssef Developer", role: "مدير العام" }]); }
-if (!localStorage.getItem("kw_chat_rooms")) { set("kw_chat_rooms", {}); }
-var compForm = document.getElementById("complaintForm"); if (compForm) { compForm.addEventListener("submit", submitComplaint); }
-var allReqs = document.querySelectorAll("input[required], textarea[required]");
-allReqs.forEach(function(el){ el.addEventListener("input", function(){ if(this.value.trim()) this.style.borderColor = "var(--border-color)"; }); });
-checkSecurityAccess(); renderAll();
+            { id: 2, name: "مسؤول شكاوى", password: "shakwa2026", permissions: { viewComplaints: true, reply: true, editPrices: false, manageEmployees: false, viewTickets: true, replyTickets: true, fireAssign: false, editSite: false, editPasswords: false } }, 
+            { id: 3, name: "دعم فني مستوى 1", password: "tech2026", permissions: { viewComplaints: true, reply: false, editPrices: false, manageEmployees: false, viewTickets: true, replyTickets: true, fireAssign: false, editSite: false, editPasswords: false } } 
+        ]); 
+    } 
+    if (!localStorage.getItem("kw_employees")) { set("kw_employees", [{ id: "100", name: "Youssef Developer", role: "مدير العام" }]); } 
+    if (!localStorage.getItem("kw_chat_rooms")) { set("kw_chat_rooms", {}); } 
+    var compForm = document.getElementById("complaintForm"); if (compForm) { compForm.addEventListener("submit", submitComplaint); } 
+    var allReqs = document.querySelectorAll("input[required], textarea[required]");
+    allReqs.forEach(function(el){ el.addEventListener("input", function(){ if(this.value.trim()) this.style.borderColor = "var(--border-color)"; }); });
+    checkSecurityAccess(); renderAll(); 
 });
