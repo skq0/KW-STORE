@@ -1,4 +1,4 @@
-// app.js - الجزء الأول: إدارة واسترجاع البيانات المخزنة من LocalStorage
+// app.js - الجزء الأول: إدارة واسترجاع البيانات المخزنة من LocalStorage لـ KW STORE
 var activeRoom = null;
 
 function get(k, def) { 
@@ -44,7 +44,7 @@ function handleForm(e) {
     alert("Success"); 
     if(document.getElementById("contactForm")) document.getElementById("contactForm").reset(); 
 }
-// app.js - الجزء الثالث: معالجة إرسال الشكاوى وبناء نظام المعرفات العشوائية الآمنة (100-1000) وعرضها بالأعلى
+// app.js - الجزء الثالث: معالجة إرسال الشكاوى وبناء نظام المعرفات العشوائية الآمنة وعرضها بالأعلى فوراً
 function submitComplaint(e) { 
     e.preventDefault(); 
     if (!validateFormInputs("complaintForm")) {
@@ -94,7 +94,7 @@ function initIdentity() {
         info.innerHTML = "👤 المعرف: " + id + " | الاسم: " + name; 
     } 
 }
-// app.js - الجزء الرابع: فتح نافذة المودال وبناء سهم خيارات الرتب بشكل ديناميكي آمن
+// app.js - الجزء الرابع: فتح نافذة المودال وبناء سهم خيارات الرتب بشكل ديناميكي آمن لموظفي النظام
 function openLoginModal() {
     var modal = document.getElementById("staffLoginModal");
     if (!modal) return;
@@ -165,7 +165,7 @@ function editUserIdentity(oldId) {
     
     if (newId.trim() !== oldId.toString()) {
         var idExists = dir.find(function(u) { return u.id.toString() === newId.trim(); });
-        if (idExists) { alert("خطأ: هذا المعرف (ID) محجوز لشخص آخر بالفعل!"); return; }
+        if (idExists) { alert("خطأ: هذا المعرف (ID) مستخدم بالفعل لشخص آخر!"); return; }
     }
 
     var currentMyId = localStorage.getItem("kw_my_id");
@@ -189,7 +189,7 @@ function editUserIdentity(oldId) {
     alert("ممتاز! تم تعديل وتحديث بيانات المعرف بنجاح تام.");
     location.reload();
 }
-// app.js - الجزء السابع: فتح دليل الزوار ورندر الأزرار التفاعلية لتعديل الصلاحيات والأمان وتجنب مشاكل علامات التنصيص
+// app.js - الجزء السابع: فتح دليل الزوار ورندر الأزرار وتمرير الـ id كنص مشفر بشكل آمن هندسياً لمنع التعليق
 function toggleUsersDirectory() { 
     var div = document.getElementById("usersDirectoryList"); 
     if (div) { 
@@ -197,7 +197,7 @@ function toggleUsersDirectory() {
             div.style.display = "block"; div.innerHTML = ""; 
             var dir = get("kw_visitors_directory", []); 
             for (var i = 0; i < dir.length; i++) { 
-                // تم إصلاح علامات التنصيص والمحاذاة بتمرير الـ id كنص صلب لمنع أي تعليق أو تجميد في المتصفح
+                // حل المشكلة: تم وضع المعرف داخل (\') لكي يمرر المتصفح دالة onclick السليمة والمحمية بنسبة ١٠٠٪
                 var itemHtml = '<div class="data-item" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">' +
                     '<span>👤 ' + dir[i].name + ' <strong style="color:var(--primary); margin-right:5px;">(ID: ' + dir[i].id + ')</strong></span>' +
                     '📝 تعديل</button>' +
@@ -224,7 +224,7 @@ function checkSecurityAccess() {
         if (isOwner || (userRole && userRole.permissions.viewTickets && userRole.permissions.replyTickets)) { staffBtn.style.setProperty('display', 'inline-block', 'important'); } else { staffBtn.style.display = "none"; } 
     } 
 }
-// app.js - الجزء الثامن والأخير: إدارة الرتب المودالز ومستمعي أحداث الـ DOM وحظر الإصدارات القديمة بالكاش
+// app.js - الجزء الثامن والأخير: إدارة الرتب والتهيئة الكلية وحظر الإصدارات القديمة المعلقة بالكاش
 function openModal(id) { if (document.getElementById(id)) document.getElementById(id).style.display = "flex"; }
 function closeModal(id) { if (document.getElementById(id)) document.getElementById(id).style.display = "none"; }
 function addNewRole() { var name = document.getElementById("roleInput").value.trim(); if (!name) return; var r = get("kw_roles_v3", []); r.push({ id: "role_" + Date.now(), name: name, password: "pass" + Date.now().toString().slice(-4), permissions: { viewComplaints: false, reply: false, editPrices: false, manageEmployees: false, viewTickets: false, replyTickets: false, fireAssign: false, editSite: false, editPasswords: false } }); set("kw_roles_v3", r); document.getElementById("roleInput").value = ""; renderAll(); checkSecurityAccess(); }
@@ -258,9 +258,9 @@ function assignEmployee() { var myId = localStorage.getItem("kw_my_id"); var id 
 function fireEmployee(empId) { var myId = localStorage.getItem("kw_my_id"); if (empId.toString() === "100") { alert("Cannot Action Admin"); return; } if (empId.toString() === myId.toString()) { alert("Action Blocked"); return; } var emps = get("kw_employees", []); emps = emps.filter(function(e) { return e.id.toString() !== empId.toString(); }); set("kw_employees", emps); renderAll(); checkSecurityAccess(); }
 
 document.addEventListener("DOMContentLoaded", function() { 
-    if (!localStorage.getItem("kw_force_refresh_v20")) { 
+    if (!localStorage.getItem("kw_force_refresh_v21")) { 
         localStorage.clear(); 
-        localStorage.setItem("kw_force_refresh_v20", "true"); 
+        localStorage.setItem("kw_force_refresh_v21", "true"); 
     } 
     initIdentity(); 
     if (!localStorage.getItem("kw_roles_v3")) { 
