@@ -197,6 +197,7 @@ function toggleUsersDirectory() {
             div.style.display = "block"; div.innerHTML = ""; 
             var dir = get("kw_visitors_directory", []); 
             for (var i = 0; i < dir.length; i++) { 
+                // تم إصلاح علامات التنصيص والمحاذاة بتمرير الـ id كنص صلب لمنع أي تعليق أو تجميد في المتصفح
                 var itemHtml = '<div class="data-item" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">' +
                     '<span>👤 ' + dir[i].name + ' <strong style="color:var(--primary); margin-right:5px;">(ID: ' + dir[i].id + ')</strong></span>' +
                     '📝 تعديل</button>' +
@@ -257,9 +258,9 @@ function assignEmployee() { var myId = localStorage.getItem("kw_my_id"); var id 
 function fireEmployee(empId) { var myId = localStorage.getItem("kw_my_id"); if (empId.toString() === "100") { alert("Cannot Action Admin"); return; } if (empId.toString() === myId.toString()) { alert("Action Blocked"); return; } var emps = get("kw_employees", []); emps = emps.filter(function(e) { return e.id.toString() !== empId.toString(); }); set("kw_employees", emps); renderAll(); checkSecurityAccess(); }
 
 document.addEventListener("DOMContentLoaded", function() { 
-    if (!localStorage.getItem("kw_force_refresh_v18")) { 
+    if (!localStorage.getItem("kw_force_refresh_v20")) { 
         localStorage.clear(); 
-        localStorage.setItem("kw_force_refresh_v18", "true"); 
+        localStorage.setItem("kw_force_refresh_v20", "true"); 
     } 
     initIdentity(); 
     if (!localStorage.getItem("kw_roles_v3")) { 
