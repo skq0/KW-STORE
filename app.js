@@ -21,8 +21,10 @@ function orderSystem(sys) {
 function handleForm(e) {
     e.preventDefault();
     alert("شكراً لك. تم إرسال طلبك بنجاح.");
-    document.getElementById("contactForm").reset();
+    var form = document.getElementById("contactForm");
+    if (form) form.reset();
 }
+
 function initIdentity() {
     var dir = get("kw_visitors_directory", []);
     var name = localStorage.getItem("kw_my_name");
@@ -75,6 +77,7 @@ document.addEventListener("keydown", function(event) {
         loginAsAdmin();
     }
 });
+
 document.addEventListener("DOMContentLoaded", function() {
     initIdentity();
     if (!localStorage.getItem("kw_roles_v3")) {
@@ -93,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function() {
 function checkSecurityAccess() {
     var myId = localStorage.getItem("kw_my_id"), isOwner = localStorage.getItem("kw_isAdmin") === "true";
     var emps = get("kw_employees", []), roles = get("kw_roles_v3", []);
-    var emp = emps.find(function(e) { return e.id.toString() === myId.toString(); });
+    var emp = emps.find(function(e) { return e.id.toString() === (myId ? myId.toString() : ""); });
     var userRole = (emp) ? roles.find(function(r) { return r.name === emp.role; }) : null;
     
     if (document.getElementById("headerRoleLeft")) { document.getElementById("headerRoleLeft").innerText = emp ? emp.role : "Client"; }
@@ -103,8 +106,17 @@ function checkSecurityAccess() {
     if (staffBtn) { staffBtn.style.display = (isOwner || (userRole && userRole.permissions.viewTickets && userRole.permissions.replyTickets)) ? "inline-block" : "none"; }
 }
 
-function openModal(id) { if (document.getElementById(id)) document.getElementById(id).style.display = "flex"; if (id === "staffTicketsModal") buildSidebar(); }
-function closeModal(id) { if (document.getElementById(id)) document.getElementById(id).style.display = "none"; }
+function openModal(id) { 
+    if (document.getElementById(id)) document.getElementById(id).style.display = "flex"; 
+    if (id === "staffTicketsModal") {
+        if (typeof buildSidebar === "function") buildSidebar();
+    } 
+}
+
+function closeModal(id) { 
+    if (document.getElementById(id)) document.getElementById(id).style.display = "none"; 
+}
+
 function toggleUsersDirectory() {
     var div = document.getElementById("usersDirectoryList");
     if (div) {
@@ -138,53 +150,78 @@ function renderAll() {
             html += '</div></div>'; rList.innerHTML += html;
         }
     }
-    if (sel) { sel.innerHTML = ""; var r = get("kw_roles_v3", []); for (var i = 0; i < r.length; i++) { sel.innerHTML += '<option value="' + r[i].name + '">' + r[i].name + '</option>'; } }
-    if (eList) { eList.innerHTML = ""; var emps = get("kw_employees", []); for (var i = 0; i < emps.length; i++) { eList.innerHTML += '<div class="data-item"><span><strong>' + emps[i].name + '</strong> [ID: ' + emps[i].id + '] -> ' + emps[i].role + '</span><button onclick="fireEmp(\'' + emps[i].id + '\')" style="background:none; border:1px solid #d9534f; color:#d9534f; cursor:pointer;">❌</button></div>'; } }
-    renderChats();
+    if (sel) { 
+        sel.innerHTML = ""; 
+        var r = get("kw_roles_v3", []); 
+        for (var i = 0; i < r.length; i++) {
+            sel.innerHTML += '<option value="' + r[i].name + '">' + r[i].name + '</option>';
+        }
+    }
+    if (eList) {
+        eList.innerHTML = ""; var emps = get("kw_employees", []);
+        for (var i = 0; i < emps.length; i++) {
+            var emp = emps[i];
+            eList.innerHTML += '<div class="data-item"><span>👤 ' + emp.name + ' (ID: ' + emp.id + ') - <strong style="color:var(--primary)">' + emp.role + '</strong></span>' +
+            (emp.id.toString() !== "100" ? '<button onclick="fireEmployee(\'' + emp.id + '\')" style="background:none; border:1px solid #d9534f; color:#d9534f; cursor:pointer;">طرد ❌</button>' : '') + '</div>';
+        }
+    }
 }
 
-function delRole(id) { set("kw_roles_v3", get("kw_roles_v3", []).filter(function(x) { return x.id !== id; })); renderAll(); checkSecurityAccess(); }
-function togglePerm(id, k, v) { var r = get("kw_roles_v3", []); var x = r.find(function(i) { return i.id === id; }); if (x) x.permissions[k] = v; set("kw_roles_v3", r); checkSecurityAccess(); }
+function togglePerm(roleId, permName, isChecked) {
+    var roles = get("kw_roles_v3", []);
+    var role = roles.find(function(r) { return r.id === roleId; });
+    if (role) {
+        role.permissions[permName] = isChecked;
+        set("kw_roles_v3", roles);
+        checkSecurityAccess();
+    }
+}
+
+function delRole(roleId) {
+    if (roleId === 1 || roleId === 2 || roleId === 3) {
+        alert("❌ لا يمكن حذف الرتب الأساسية للنظام!");
+        return;
+    }
+    var roles = get("kw_roles_v3", []);
+    roles = roles.filter(function(r) { return r.id !== roleId; });
+    set("kw_roles_v3", roles);
+    renderAll();
+}
 
 function assignEmployee() {
-    var val = document.getElementById("empNameInput").value.trim(), role = document.getElementById("empRoleSelect").value; if (!val) return;
-    var u = get("kw_visitors_directory", []).find(function(x) { return x.id.toString() === val || x.name.toLowerCase() === val.toLowerCase(); });
-    var fName = u ? u.name : val, fId = u ? u.id : Math.floor(1000 + Math.random() * 9000).toString();
-    var emps = get("kw_employees", []); if (emps.some(function(e) { return e.name.toLowerCase() === fName.toLowerCase(); })) return alert("مسجل بالفعل!");
-    emps.push({ id: fId, name: fName, role: role }); set("kw_employees", emps); document.getElementById("empNameInput").value = ""; renderAll(); checkSecurityAccess();
-}
-
-function fireEmp(id) { if (confirm("فصل الموظف؟")) { set("kw_employees", get("kw_employees", []).filter(function(e) { return e.id.toString() !== id.toString(); })); renderAll(); checkSecurityAccess(); } }
-
-function sendMsg(src) {
-    var input = document.getElementById(src === "client" ? "chatInput" : "adminChatInput");
-    var text = input.value.trim(), myId = localStorage.getItem("kw_my_id"), myName = localStorage.getItem("kw_my_name"); if (!text) return; if (src === "admin" && !activeRoom) return;
-    var target = src === "client" ? myId : activeRoom; var rms = get("kw_chat_rooms", {});
-    if (!rms[target]) rms[target] = { name: src === "client" ? myName : "Client", messages: [] };
-    rms[target].messages.push({ text: text, sender: src === "client" ? "client" : "staff", name: myName, id: myId, time: new Date().toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit" }) });
-    set("kw_chat_rooms", rms); input.value = ""; renderChats();
-}
-
-function sendTicketMessage() { sendMsg("client"); }
-function sendAdminReply() { sendMsg("admin"); }
-
-function buildSidebar() {
-    var sb = document.getElementById("roomsSidebar"), rms = get("kw_chat_rooms", {});
-    if (sb) { sb.innerHTML = ""; var keys = Object.keys(rms); for (var i = 0; i < keys.length; i++) { var id = keys[i], activeClass = activeRoom === id ? "active" : ""; sb.innerHTML += '<button class="room-tab ' + activeClass + '" onclick="activeRoom=\'' + id + '\'; buildSidebar(); renderChats();">👤 ' + rms[id].name + ' [' + id + ']</button>'; } }
-}
-
-function renderChats() {
-    var rms = get("kw_chat_rooms", {}), myId = localStorage.getItem("kw_my_id");
-    var cBox = document.getElementById("clientChatBox");
-    if (cBox && rms[myId]) { 
-        var html = ""; for (var i = 0; i < rms[myId].messages.length; i++) { var m = rms[myId].messages[i], isClient = m.sender === "client"; html += '<div class="msg ' + m.sender + '" style="margin-bottom:5px; padding:8px; border-radius:5px; background:' + (isClient ? '#223a2a':'#cd9b32') + '; color:' + (isClient ? '#fff':'#000') + '; align-self:' + (isClient ? 'flex-start':'flex-end') + '"><div style="font-size:10px; font-weight:bold; color:' + (isClient ? '#cd9b32':'#00ff66') + '">' + m.name + ' (' + m.id + ')</div><div>' + m.text + '</div></div>'; }
-        cBox.innerHTML = html; cBox.scrollTop = cBox.scrollHeight; 
+    var id = document.getElementById("empIdInput").value.trim();
+    var role = document.getElementById("empRoleSelect").value;
+    if (!id) return;
+    
+    var dir = get("kw_visitors_directory", []);
+    var user = dir.find(function(u) { return u.id.toString() === id.toString(); });
+    if (!user) {
+        alert("❌ هذا المعرف (ID) غير مسجل في دليل الزوار!");
+        return;
     }
-    var aBox = document.getElementById("adminChatBox");
-    if (aBox) {
-        if (activeRoom && rms[activeRoom]) { 
-            var html = ""; for (var i = 0; i < rms[activeRoom].messages.length; i++) { var m = rms[activeRoom].messages[i], isClient = m.sender === "client"; html += '<div class="msg ' + m.sender + '" style="margin-bottom:5px; padding:8px; border-radius:5px; background:' + (isClient ? '#223a2a':'#cd9b32') + '; color:' + (isClient ? '#fff':'#000') + '; align-self:' + (isClient ? 'flex-start':'flex-end') + '"><div style="font-size:10px; font-weight:bold; color:' + (isClient ? '#cd9b32':'#00ff66') + '">' + m.name + ' (' + m.id + ')</div><div>' + m.text + '</div></div>'; }
-            aBox.innerHTML = html; aBox.scrollTop = aBox.scrollHeight; 
-        } else { aBox.innerHTML = '<p style="color:#888; text-align:center;">اختر تذكرة لبدء الرد</p>'; }
+    
+    var emps = get("kw_employees", []);
+    var exist = emps.find(function(e) { return e.id.toString() === id.toString(); });
+    if (exist) {
+        exist.role = role;
+    } else {
+        emps.push({ id: id, name: user.name, role: role });
     }
+    set("kw_employees", emps);
+    document.getElementById("empIdInput").value = "";
+    renderAll();
+    checkSecurityAccess();
+    alert("💼 تم تعيين/تعديل رتبة الموظف بنجاح!");
+}
+
+function fireEmployee(empId) {
+    if (empId.toString() === "100") {
+        alert("❌ لا يمكن طرد المدير العام المسؤول!");
+        return;
+    }
+    var emps = get("kw_employees", []);
+    emps = emps.filter(function(e) { return e.id.toString() !== empId.toString(); });
+    set("kw_employees", emps);
+    renderAll();
+    checkSecurityAccess();
 }
