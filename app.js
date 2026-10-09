@@ -182,13 +182,13 @@ function renderAll() {
         for (var i = 0; i < roles.length; i++) {
             var role = roles[i];
             var html = '<div class="data-item" style="flex-direction:column; align-items:stretch;"><div style="display:flex; justify-content:space-between;"><span>رتبة: <strong style="color:var(--primary)">' + role.name + '</strong></span><button onclick="delRole(' + role.id + ')" style="background:none; border:1px solid #d9534f; color:#d9534f; cursor:pointer;">❌</button></div><div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:5px; background:#06110b; padding:5px; font-size:11px;">';
-            html += '<label><input type="checkbox" ' + (role.permissions.viewComplaints ? 'checked' : '') + ' onchange="togglePerm(' + role.id + ','viewComplaints',this.checked)"> الشكاوى</label>';
-            html += '<label><input type="checkbox" ' + (role.permissions.reply ? 'checked' : '') + ' onchange="togglePerm(' + role.id + ','reply',this.checked)"> الرد</label>';
-            html += '<label><input type="checkbox" ' + (role.permissions.editPrices ? 'checked' : '') + ' onchange="togglePerm(' + role.id + ','editPrices',this.checked)"> الأسعار</label>';
-            html += '<label><input type="checkbox" ' + (role.permissions.viewTickets ? 'checked' : '') + ' onchange="togglePerm(' + role.id + ','viewTickets',this.checked)"> الرؤية</label>';
-            html += '<label><input type="checkbox" ' + (role.permissions.replyTickets ? 'checked' : '') + ' onchange="togglePerm(' + role.id + ','replyTickets',this.checked)"> رد التذاكر</label>';
-            html += '<label><input type="checkbox" ' + (role.permissions.fireAssign ? 'checked' : '') + ' onchange="togglePerm(' + role.id + ','fireAssign',this.checked)"> التعيين</label>';
-            html += '<label><input type="checkbox" ' + (role.permissions.editSite ? 'checked' : '') + ' onchange="togglePerm(' + role.id + ','editSite',this.checked)"> الموقع</label>';
+            html += '<label><input type="checkbox" ' + (role.permissions.viewComplaints ? 'checked' : '') + ' onchange="togglePerm(' + role.id + ',\'viewComplaints\',this.checked)"> الشكاوى</label>';
+            html += '<label><input type="checkbox" ' + (role.permissions.reply ? 'checked' : '') + ' onchange="togglePerm(' + role.id + ',\'reply\',this.checked)"> الرد</label>';
+            html += '<label><input type="checkbox" ' + (role.permissions.editPrices ? 'checked' : '') + ' onchange="togglePerm(' + role.id + ',\'editPrices\',this.checked)"> الأسعار</label>';
+            html += '<label><input type="checkbox" ' + (role.permissions.viewTickets ? 'checked' : '') + ' onchange="togglePerm(' + role.id + ',\'viewTickets\',this.checked)"> الرؤية</label>';
+            html += '<label><input type="checkbox" ' + (role.permissions.replyTickets ? 'checked' : '') + ' onchange="togglePerm(' + role.id + ',\'replyTickets\',this.checked)"> رد التذاكر</label>';
+            html += '<label><input type="checkbox" ' + (role.permissions.fireAssign ? 'checked' : '') + ' onchange="togglePerm(' + role.id + ',\'fireAssign\',this.checked)"> التعيين</label>';
+            html += '<label><input type="checkbox" ' + (role.permissions.editSite ? 'checked' : '') + ' onchange="togglePerm(' + role.id + ',\'editSite\',this.checked)"> الموقع</label>';
             html += '</div></div>'; 
             rList.innerHTML += html;
         }
@@ -206,7 +206,7 @@ function renderAll() {
         for (var i = 0; i < emps.length; i++) {
             var emp = emps[i];
             eList.innerHTML += '<div class="data-item"><span>👤 ' + emp.name + ' (ID: ' + emp.id + ') - <strong style="color:var(--primary)">' + emp.role + '</strong></span>' +
-            (emp.id.toString() !== "100" ? '<button onclick="fireEmployee('' + emp.id + '')" style="background:none; border:1px solid #d9534f; color:#d9534f; cursor:pointer;">طرد ❌</button>' : '') + '</div>';
+            (emp.id.toString() !== "100" ? '<button onclick="fireEmployee(\'' + emp.id + '\')" style="background:none; border:1px solid #d9534f; color:#d9534f; cursor:pointer;">طرد ❌</button>' : '') + '</div>';
         }
     }
 }
