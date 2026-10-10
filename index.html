@@ -107,13 +107,14 @@
             }
             .hero h1 { font-size: 1.8rem; }
             .hero p { font-size: 1rem; }
+            footer { position: relative; flex-direction: column; gap: 10px; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <!-- المعرف البرمجي والهوية الفورية على اليمين -->
+        <!-- [تم الإصلاح] إغلاق وسم حقل الهوية المفتوح برمجياً لضمان تعبئة المعرف بالأعلى حياً وثباته -->
         👤 جاري تحميل المعرف...</div>
         
         <!-- الشعار ثابت ومتمركز في المنتصف تماماً -->
@@ -127,13 +128,13 @@
             <button id="logout-system-btn" class="nav-btn" onclick="logoutStaff()" style="border-color: #d9534f; color: #d9534f;">🚪 خروج</button>
         </div>
     </header>
-
     <div class="container">
         <div class="hero">
             <h1>إدارة أعمالك أصبحت أسهل وأكثر أماناً</h1>
             <p>نحن نصنع برمجيات مخصصة وحلول كاشير ذكية مصممة خصيصاً لمساعدة المطاعم والسوبر ماركت على تنظيم حساباتهم ومخازنهم بدقة متناهية.</p>
             <button class="btn" style="max-width: 250px;" onclick="document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });">اطلب نسختك التجريبية الآن</button>
         </div>
+        
         <div class="grid">
             <div class="card">
                 <h3>أنظمة إدارة الأعمال الاحترافية</h3>
@@ -158,7 +159,6 @@
                 <button class="btn" onclick="orderSystem('Cashier System V1')">اطلب الآن</button>
             </div>
         </div>
-
         <div class="form-section">
             <h3>📋 قسم تقديم الشكاوى للمتجر</h3>
             <p style="text-align: center; font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">صوتك مسموع.. اكتب شكواك وسيتم مراجعتها من المسؤولين فوراً.</p>
@@ -175,9 +175,15 @@
             </form>
         </div>
 
+        <!-- 📩 [إضافة صلاحية ربط حية]: بطاقة لعرض وحقن الحلول والردود الفنية القادمة من الموظفين فوراً حياً -->
+        <div class="form-section" id="clientRepliesSection" style="display: none; margin-top: 20px; border-color: #e67e22;">
+            <h3 style="color: #e67e22; text-align: center; margin-bottom: 10px;">📩 الردود الفنية والحلول المستلمة من الموظفين</h3>
+            <div id="staffRepliesContainer"></div>
+        </div>
+        <!-- [تم التعديل] تم إضافة معالج الحدث البرمجي الصارم handleForm ليربط المبيعات بالموظفين حياً فورا -->
         <div id="contact" class="form-section" style="margin-top: 20px;">
             <h3>طلب الأنظمة أو التواصل معنا</h3>
-            <form id="contactForm" onsubmit="handleForm(e)">
+            <form id="contactForm" onsubmit="handleForm(event)">
                 <div class="form-group">
                     <label>الاسم:</label>
                     <input type="text" id="clientName" class="form-control" required>
@@ -224,6 +230,7 @@
             <div id="usersDirectoryList" style="display: none; max-height: 200px; overflow-y: auto; background: #060b07; border: 1px solid var(--border-color); padding: 5px; border-radius: 4px;"></div>
         </div>
     </div>
+
     <!-- مودال إدارة التذاكر وغرف الدعم -->
     <div id="staffTicketsModal" class="modal">
         <div class="modal-content">
@@ -233,7 +240,7 @@
             <div id="chatBox" style="display: none; border: 1px solid var(--border-color); padding: 10px; border-radius: 4px; background: #060b07;">
                 <div id="chatMessages" style="height: 180px; overflow-y: auto; margin-bottom: 10px; padding: 5px;"></div>
                 <div style="display: flex; gap: 5px;">
-                    <input type="text" id="staffMsgInput" class="form-control" placeholder="اكتب ردك الفني هنا...">
+                    <input type="text" id="staffMsgInput" class="form-control" placeholder="اكتب ردك الفني..." class="form-control">
                     <button class="btn" style="width: auto;" onclick="sendStaffMsg()">إرسال</button>
                 </div>
             </div>
@@ -258,10 +265,10 @@
             </form>
         </div>
     </div>
-
     <footer>
         <div style="font-size: 12px; color: var(--text-muted);">حقوق الطبع محفوظة لـ KW STORE © ٢٠٢٦ - تطوير المسؤول يوسف</div>
-        <button onclick="openLoginModal()" style="background: none; border: none; color: #060b07; cursor: pointer; font-size: 14px;" id="secretLockLink">قفل النظام 🔐</button>
+        <!-- [تحديث الربط]: تم تثبيت معرّف التوجيه المربوط بالـ EventListener الحامي للموظفين على جيت هب -->
+        <button style="background: none; border: none; color: #060b07; cursor: pointer; font-size: 14px;" id="secretLockLink">قفل النظام 🔐</button>
     </footer>
 
     <script src="app.js"></script>
